@@ -1,7 +1,8 @@
 require 'base64'
+require 'faraday'
 
 module Fintecture
-  module Faraday
+  module FaradayConn
     module Authentication
       module Connection
         private

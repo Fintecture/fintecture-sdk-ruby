@@ -11,3 +11,5 @@
 .rspec_status
 .idea/
 lib/example.rb
+
+.DS_Store
