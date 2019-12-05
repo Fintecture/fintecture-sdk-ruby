@@ -13,19 +13,19 @@ module Fintecture
             state: state
         }.map{|key, value| "#{key}=#{value}"}.join('&')}"
 
-        Faraday.get "#{token_authorize_endpoint}#{query_string}"
+        ::Faraday.get "#{token_authorize_endpoint}#{query_string}"
       end
 
       def access_token(auth_code =  nil)
         body = access_token_data auth_code
 
-        post url: access_toke_url, req_body: body
+        Fintecture::Faraday::Authentication::Connection.post url: access_toke_url, req_body: body
       end
 
       def refresh_token(refresh_token)
         body = refresh_token_data refresh_token
 
-        post url: refresh_token_url, req_body: body
+        Fintecture::Faraday::Authentication::Connection.post url: refresh_token_url, req_body: body
       end
 
       private
@@ -44,33 +44,6 @@ module Fintecture
 
       def refresh_token_url
         "#{base_url}#{Fintecture::Api::Endpoints::Authentication::OAUTH_REFRESH_TOKEN}"
-      end
-
-      def faraday_connection(url)
-        Faraday.new(url: url) do |faraday|
-          faraday.request :url_encoded
-          faraday.adapter  Faraday.default_adapter
-        end
-      end
-
-      def post(url:, req_body:)
-        conn = faraday_connection(url)
-
-        conn.post do |req|
-          req.headers = headers
-          req.body = req_body
-        end
-      end
-
-      def headers
-        client_token = Base64.strict_encode64("#{Fintecture.app_id}:#{Fintecture.app_secret}")
-
-        {
-            'Accept' => 'application/json',
-            'User-Agent' => "Fintecture Ruby SDK v #{Fintecture::VERSION}",
-            'Authorization' => "Basic #{client_token}",
-            'Content-Type' => 'application/x-www-form-urlencoded',
-        }
       end
 
       def access_token_data(auth_code)

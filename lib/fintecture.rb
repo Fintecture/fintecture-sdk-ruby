@@ -21,7 +21,7 @@ require 'fintecture/api/base_url'
 require 'fintecture/api/endpoints/authentication'
 
 # Connections
-#require 'fintecture/faraday_conn/authentication/connection'
+require 'fintecture/faraday/authentication/connection'
 
 
 module Fintecture
