@@ -48,26 +48,11 @@ You can also see the available environments
 
 ### Authentication     
     
-#### Getting the code authorization
-
-```ruby
-Fintecture::Authentication.authorize('http://www.fintecture.com')
-``` 
 
 #### Access token
 
-###### PIS
 ```ruby
 Fintecture::Authentication.access_token
-```
-###### AIS
-```ruby
-Fintecture::Authentication.access_token(code)
-```
-    
-#### Refresh token
-```ruby
-Fintecture::Authentication.refresh_token(refresh_token)
 ```
 
 ### Connect 
