@@ -45,12 +45,12 @@ module Fintecture
       def validate_payment_integrity
         raise_if_klass_mismatch @payment_attrs, Hash, 'payment_attrs'
 
-        error_msg = 'invalid payment payload'
+        error_msg = 'invalid payment payload parameter'
 
-        raise error_msg unless %w[pis ais].include? @type
+        raise "#{error_msg} type" unless %w[pis ais].include? @type
 
         %i[amount currency order_id customer_id customer_full_name customer_email customer_ip].each do |param|
-          raise error_msg if @payment_attrs[param].nil?
+          raise "#{error_msg} #{param.to_s}" if @payment_attrs[param].nil?
         end
       end
 
@@ -58,7 +58,7 @@ module Fintecture
         raise_if_klass_mismatch @post_payment_attrs, Hash, 'post_payment_attrs'
 
         %i[s state status session_id customer_id provider].each do |param|
-          raise 'invalid post payment parameter' if @post_payment_attrs[param].nil?
+          raise "invalid post payment parameter #{param.to_s}" if @post_payment_attrs[param].nil?
         end
       end
 
@@ -93,9 +93,11 @@ module Fintecture
       end
 
       def build_state(payload)
+        access_token_response = Fintecture::Authentication.access_token
+        access_token = JSON.parse(access_token_response.body)['access_token']
         {
             app_id: Fintecture.app_id,
-            app_secret: Fintecture.app_secret,
+            access_token: access_token,
             signature_type: SIGNATURE_TYPE,
             signature: build_signature(payload),
             redirect_uri: @payment_attrs[:redirect_uri] || '',

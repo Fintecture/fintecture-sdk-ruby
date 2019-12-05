@@ -33,10 +33,8 @@ module Fintecture
 
           begin
             private_key.private_decrypt(encrypted_string, OpenSSL::PKey::RSA::PKCS1_OAEP_PADDING)
-          rescue StandardError => e
-            raise e.message
-            # puts e.backtrace.inspect
-            # raise 'an error occurred while decrypting'
+          rescue
+            raise 'error during decryption'
           end
         end
 

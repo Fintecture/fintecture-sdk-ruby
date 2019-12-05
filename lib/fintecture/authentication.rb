@@ -65,11 +65,10 @@ module Fintecture
       end
 
       def refresh_token_data(refresh_token)
-        data = {
+        {
             grant_type: 'refresh_token',
             refresh_token: refresh_token
         }
-        data
       end
 
     end

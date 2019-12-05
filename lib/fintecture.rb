@@ -27,9 +27,9 @@ require 'fintecture/faraday/authentication/connection'
 module Fintecture
   @log_level = nil
   @logger = nil
-  @environment = 'production'
+  @environment = 'sandbox'
 
-  ENVIRONMENTS = %w[local test sandbox production]
+  ENVIRONMENTS = %w[sandbox production].freeze
 
   class << self
     attr_accessor :app_id, :app_secret, :app_private_key
@@ -78,5 +78,3 @@ module Fintecture
 
   end
 end
-
-Fintecture.log_level = ENV["FINTECTURE_LOG"] unless ENV["FINTECTURE_LOG"].nil?

@@ -1,8 +1,6 @@
 # Fintecture
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/fintecture`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-Fintecture is connected with most European banks and enables a user to initiate a payment directly from their bank account. This results to a bank transfer sent from te user's bank account directly to your bank account, skipping all intermediaries. Within the SEPA region, transers take between 10 seconds to 1 business day to arrive on your bank account. No hidden fees. Check out [our website](https://fintecture.com/).
+Fintecture is connected with most European banks and enables a user to initiate a payment directly from their bank account. This results to a bank transfer sent from the user's bank account directly to your bank account, skipping all intermediaries. Within the SEPA region, transfers take between 10 seconds to 1 business day to arrive on your bank account. No hidden fees. Check out [our website](https://fintecture.com/).
 
 ## Installation
 
@@ -22,7 +20,7 @@ Or install it yourself as:
 
 ## Usage
 
-This is a very basic guide of how to use this gem. Click on the follow [link](https://docs.fintecture.com/) for specific information.
+Get started by subscribing to a free developer account. Join today to get access to our sandbox by registering on the [developer console](https://console.fintecture.com) by creating your first sets of API Keys. When creating an account, specify you are an ECOMMERCE. When you’re ready to deploy to production, just go through the Activation Form in your console. Once the Fintecture Team activates your account, you’ll be ready to start receiving real bank transfers directly on the bank account specified during activation.
 
 Initialize your client credentials
 
@@ -35,7 +33,7 @@ Fintecture.app_private_key = %q(your_app_private_key)
     
 #### Environments
 
-By default `production` is the initial environment, but you can change to sandbox by doing
+By default `sandbox` is the initial environment, but you can change to sandbox by doing
 
 ```ruby
 Fintecture.environment = 'sandbox'
@@ -78,8 +76,6 @@ url = Fintecture::Connect.connect_url_pis payment_attrs
 
 ```ruby
 callback_params = {
-    app_id: 'uri_app_id',
-    app_secret: 'uri_app_secret',
     session_id: 'uri_session_id',
     status: 'uri_status',
     customer_id: 'uri_customer_id',
