@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.summary       = 'Short summary'
   spec.description   = 'Longer summary'
   spec.homepage      = "http://fintecture.com"
-  spec.license       = "GPLv3"
+  spec.license       = "GPL-3.0"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.

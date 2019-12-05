@@ -29,7 +29,7 @@ module Fintecture
   @logger = nil
   @environment = 'production'
 
-  ENVIRONMENTS = %w[local sandbox production]
+  ENVIRONMENTS = %w[local test sandbox production]
 
   class << self
     attr_accessor :app_id, :app_secret, :app_private_key

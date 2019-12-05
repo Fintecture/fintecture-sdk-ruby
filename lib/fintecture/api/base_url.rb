@@ -4,9 +4,9 @@ module Fintecture
 
       FINTECTURE_OAUTH_URL = {
           local: 'http://localhost:3000/oauth',
-          test: 'https://oauth-sandbox-test.fintecture.com',
-          sandbox: 'https://oauth-sandbox.fintecture.com',
-          production: 'https://oauth.fintecture.com'
+          test: 'https://oauth-sandbox-test.fintecture.com/oauth',
+          sandbox: 'https://oauth-sandbox.fintecture.com/oauth',
+          production: 'https://oauth.fintecture.com/oauth'
       }
 
       FINTECTURE_API_URL = {
