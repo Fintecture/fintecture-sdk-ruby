@@ -112,11 +112,11 @@ module Fintecture
         test_string = URI.encode_www_form({
             app_id: Fintecture.app_id,
             app_secret: Fintecture.app_secret,
-            session_id: parameters[:session_id],
-            status: parameters[:status],
-            customer_id: parameters[:customer_id],
-            provider: parameters[:provider],
-            state: parameters[:state]
+            session_id: parameters['session_id'],
+            status: parameters['status'],
+            customer_id: parameters['customer_id'],
+            provider: parameters['provider'],
+            state: parameters['state']
           })
 
         Fintecture::Utils::Crypto.hash_base64 test_string

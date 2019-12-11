@@ -29,7 +29,7 @@ module Fintecture
   @logger = nil
   @environment = 'sandbox'
 
-  ENVIRONMENTS = %w[sandbox production].freeze
+  ENVIRONMENTS = %w[local sandbox production].freeze
 
   class << self
     attr_accessor :app_id, :app_secret, :app_private_key

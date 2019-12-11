@@ -7,7 +7,7 @@ Fintecture is connected with most European banks and enables a user to initiate 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'fintecture', '~> 0.1.0'
+gem 'fintecture'
 ```
 
 or install it through our github repository
