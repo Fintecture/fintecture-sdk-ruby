@@ -109,7 +109,7 @@ module Fintecture
       end
 
       def build_local_digest(parameters)
-        test_string = URI.encode_www_form({
+        test_string = {
             app_id: Fintecture.app_id,
             app_secret: Fintecture.app_secret,
             session_id: parameters['session_id'],
@@ -117,7 +117,7 @@ module Fintecture
             customer_id: parameters['customer_id'],
             provider: parameters['provider'],
             state: parameters['state']
-          })
+        }.map{|key, value| "#{key}=#{value}"}.join('&')
 
         Fintecture::Utils::Crypto.hash_base64 test_string
       end

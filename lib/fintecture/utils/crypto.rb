@@ -39,7 +39,8 @@ module Fintecture
         end
 
         def hash_base64(plain_text)
-          Base64.strict_encode64(Digest::SHA2.new(256).hexdigest(plain_text))
+          digest = Digest::SHA256.digest plain_text
+          Base64.strict_encode64(digest)
         end
 
       end
