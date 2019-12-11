@@ -78,7 +78,7 @@ module Fintecture
         }
 
         data = {
-            type: 'SEPA',
+            type: 'PAYMENT',
             attributes: attributes,
         }
 
@@ -109,15 +109,15 @@ module Fintecture
       end
 
       def build_local_digest(parameters)
-        test_string = Base64.strict_encode64({
-             app_id: Fintecture.app_id,
-             app_secret: Fintecture.app_secret,
-             session_id: parameters[:session_id],
-             status: parameters[:status],
-             customer_id: parameters[:customer_id],
-             provider: parameters[:provider],
-             state: parameters[:state]
-         }.to_json.to_s)
+        test_string = URI.encode_www_form({
+            app_id: Fintecture.app_id,
+            app_secret: Fintecture.app_secret,
+            session_id: parameters[:session_id],
+            status: parameters[:status],
+            customer_id: parameters[:customer_id],
+            provider: parameters[:provider],
+            state: parameters[:state]
+          })
 
         Fintecture::Utils::Crypto.hash_base64 test_string
       end

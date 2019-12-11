@@ -78,3 +78,5 @@ module Fintecture
 
   end
 end
+
+Fintecture.log_level = ENV["FINTECTURE_LOG"] unless ENV["FINTECTURE_LOG"].nil?
