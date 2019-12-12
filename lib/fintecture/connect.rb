@@ -7,16 +7,16 @@ module Fintecture
       SIGNATURE_TYPE = 'rsa-sha256'.freeze
 
       def connect_url_pis(payment_attrs = nil)
-          connect_url(payment_attrs: payment_attrs, type: 'pis')
+        connect_url(payment_attrs: payment_attrs, type: 'pis')
       end
 
       def connect_url(payment_attrs: nil, type: 'pis')
-        @payment_attrs = payment_attrs
+        @payment_attrs = payment_attrs.as_json
         @type = type
 
         validate_payment_integrity
 
-        payment_attrs[:end_to_end_id] ||= Fintecture::Utils::Crypto.generate_uuid
+        @payment_attrs['end_to_end_id'] ||= Fintecture::Utils::Crypto.generate_uuid
         payload = build_payload
         state = build_state(payload).to_json.to_s
 
@@ -24,14 +24,14 @@ module Fintecture
       end
 
       def verify_url_parameters(parameters = nil)
-          @post_payment_attrs = parameters
+        @post_payment_attrs = parameters.as_json
 
-          validate_post_payment_integrity
+        validate_post_payment_integrity
 
-          decrypted =  Fintecture::Utils::Crypto.decrypt_private parameters[:s]
-          local_digest = build_local_digest parameters
+        decrypted =  Fintecture::Utils::Crypto.decrypt_private @post_payment_attrs['s']
+        local_digest = build_local_digest @post_payment_attrs
 
-          decrypted == local_digest
+        decrypted == local_digest
       end
 
       private
@@ -49,32 +49,32 @@ module Fintecture
 
         raise "#{error_msg} type" unless %w[pis ais].include? @type
 
-        %i[amount currency order_id customer_id customer_full_name customer_email customer_ip].each do |param|
-          raise "#{error_msg} #{param.to_s}" if @payment_attrs[param].nil?
+        %w[amount currency order_id customer_id customer_full_name customer_email customer_ip].each do |param|
+          raise "#{error_msg} #{param}" if @payment_attrs[param].nil?
         end
       end
 
       def validate_post_payment_integrity
         raise_if_klass_mismatch @post_payment_attrs, Hash, 'post_payment_attrs'
 
-        %i[s state status session_id customer_id provider].each do |param|
-          raise "invalid post payment parameter #{param.to_s}" if @post_payment_attrs[param].nil?
+        %w[s state status session_id customer_id provider].each do |param|
+          raise "invalid post payment parameter #{param}" if @post_payment_attrs[param].nil?
         end
       end
 
       def build_payload
         attributes = {
-            amount: @payment_attrs[:amount],
-            currency: @payment_attrs[:currency],
-            communication: @payment_attrs[:order_id].to_s,
-            end_to_end_id: @payment_attrs[:end_to_end_id]
+            amount: @payment_attrs['amount'],
+            currency: @payment_attrs['currency'],
+            communication: @payment_attrs['order_id'].to_s,
+            end_to_end_id: @payment_attrs['end_to_end_id']
         }
 
         meta = {
-            psu_local_id: @payment_attrs[:customer_id],
-            psu_name: @payment_attrs[:customer_full_name],
-            psu_email: @payment_attrs[:customer_email],
-            psu_ip: @payment_attrs[:customer_ip]
+            psu_local_id: @payment_attrs['customer_id'],
+            psu_name: @payment_attrs['customer_full_name'],
+            psu_email: @payment_attrs['customer_email'],
+            psu_ip: @payment_attrs['customer_ip']
         }
 
         data = {
@@ -100,9 +100,9 @@ module Fintecture
             access_token: access_token,
             signature_type: SIGNATURE_TYPE,
             signature: build_signature(payload),
-            redirect_uri: @payment_attrs[:redirect_uri] || '',
-            origin_uri: @payment_attrs[:origin_uri] || '',
-            order_id: @payment_attrs[:order_id],
+            redirect_uri: @payment_attrs['redirect_uri'] || '',
+            origin_uri: @payment_attrs['origin_uri'] || '',
+            order_id: @payment_attrs['order_id'],
             payload: payload,
             version: Fintecture::VERSION,
         }
