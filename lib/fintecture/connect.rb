@@ -11,7 +11,7 @@ module Fintecture
       end
 
       def connect_url(payment_attrs: nil, type: 'pis')
-        @payment_attrs = payment_attrs.as_json
+        @payment_attrs = as_json payment_attrs
         @type = type
 
         validate_payment_integrity
@@ -24,7 +24,7 @@ module Fintecture
       end
 
       def verify_url_parameters(parameters = nil)
-        @post_payment_attrs = parameters.as_json
+        @post_payment_attrs = as_json parameters
 
         validate_post_payment_integrity
 
@@ -49,9 +49,17 @@ module Fintecture
 
         raise "#{error_msg} type" unless %w[pis ais].include? @type
 
-        %w[amount currency order_id customer_id customer_full_name customer_email customer_ip].each do |param|
-          raise "#{error_msg} #{param}" if @payment_attrs[param].nil?
+        raise 'end_to_end_id must be an alphanumeric string' if(@payment_attrs['end_to_end_id'] && !@payment_attrs['end_to_end_id'].match(/^[0-9a-zA-Z]*$/))
+
+        %w[amount currency customer_full_name customer_email customer_ip redirect_uri].each do |param|
+          raise "#{param} is a mandatory field" if @payment_attrs[param].nil?
         end
+
+        # Check if string
+        %w[communication redirect_uri].each do |param|
+          raise_if_klass_mismatch(@payment_attrs[param], String, param) if(@payment_attrs[param])
+        end
+
       end
 
       def validate_post_payment_integrity
@@ -66,12 +74,11 @@ module Fintecture
         attributes = {
             amount: @payment_attrs['amount'],
             currency: @payment_attrs['currency'],
-            communication: @payment_attrs['order_id'].to_s,
+            communication: @payment_attrs['communication'],
             end_to_end_id: @payment_attrs['end_to_end_id']
         }
 
         meta = {
-            psu_local_id: @payment_attrs['customer_id'],
             psu_name: @payment_attrs['customer_full_name'],
             psu_email: @payment_attrs['customer_email'],
             psu_ip: @payment_attrs['customer_ip']
@@ -102,7 +109,7 @@ module Fintecture
             signature: build_signature(payload),
             redirect_uri: @payment_attrs['redirect_uri'] || '',
             origin_uri: @payment_attrs['origin_uri'] || '',
-            order_id: @payment_attrs['order_id'],
+            state: @payment_attrs['state'],
             payload: payload,
             version: Fintecture::VERSION,
         }
@@ -124,6 +131,16 @@ module Fintecture
 
       def base_url
         Fintecture::Api::BaseUrl::FINTECTURE_CONNECT_URL[Fintecture.environment.to_sym]
+      end
+
+      def as_json(element)
+          return JSON(element.to_json) if element.is_a? Hash
+
+          begin
+            element.as_json
+          rescue NoMethodError
+            raise "invalid parameter format, the parameter should be a Hash or an Object Model instead a #{element.class.name}"
+          end
       end
     end
   end

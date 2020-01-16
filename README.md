@@ -66,17 +66,29 @@ Fintecture::Authentication.access_token
 payment_attrs = {
     amount: 123,
     currency: 'EUR',
-    order_id: 123,
-    customer_id: 123,
+    communication: 'Thanks Mom!',
     customer_full_name: 'John Doe',
     customer_email: 'john.doe@email.com',
     customer_ip: '127.0.0.1',
     end_to_end_id: '5f78e902907e4209aa8df63659b05d24', # uuid optional
-    redirect_uri: '',
-    origin_uri: ''
+    redirect_uri: 'http://example.com/callback',
+    origin_uri: '',
+    state: 'somestate'
 }
 url = Fintecture::Connect.connect_url_pis payment_attrs
 ```
+Explanation of each field:
+
+* amount: **[mandatory]** The amount of the payment initiation request. Min 1.00 and Max is variable based on bank's policy.
+* currency: **[mandatory]** The currency of the payment initiation request. Currently, only EUR and GBP is supported.
+* communication: **[optional]** A message sent to the beneficiary of the payment and visible on his bank statement. In the context of ecommerce payment collection, the order reference is inputted here (with an optional prefer ex: REF#23444)
+* customer_full_name: **[mandatory]** the full name of the payer
+* customer_email: **[mandatory]** the email of the payer
+* customer_ip: **[mandatory]** the ip address of the payer
+* end_to_end_id: **[optional]** unique id of the payment which is sent to the bank but is invisible to the customer. Max 42 character string.
+* redirect_uri: **[mandatory]** the callback URL to which the customer is redirected after authentication with his bank
+* origin_uri: **[optional]** a  URL to which the customer will be redirected if he wants to exit Fintecture Connect
+* state: **[optional]** A state parameter which is sent back on callback
     
 #### Verify URL parameters
 
