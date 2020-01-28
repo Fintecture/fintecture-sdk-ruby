@@ -19,7 +19,7 @@ module Fintecture
       def access_token(auth_code =  nil)
         body = access_token_data auth_code
 
-        Fintecture::Faraday::Authentication::Connection.post url: access_toke_url, req_body: body
+        Fintecture::Faraday::Authentication::Connection.post url: access_token_url, req_body: body
       end
 
       def refresh_token(refresh_token)
@@ -38,7 +38,7 @@ module Fintecture
         "#{base_url}#{Fintecture::Api::Endpoints::Authentication::OAUTH_TOKEN_AUTHORIZE}"
       end
 
-      def access_toke_url
+      def access_token_url
         "#{base_url}#{Fintecture::Api::Endpoints::Authentication::OAUTH_ACCESS_TOKEN}"
       end
 

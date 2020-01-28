@@ -1,5 +1,6 @@
 require 'base64'
 require 'json'
+require 'faraday'
 
 module Fintecture
   class Connect
@@ -17,8 +18,11 @@ module Fintecture
         validate_payment_integrity
 
         @payment_attrs['end_to_end_id'] ||= Fintecture::Utils::Crypto.generate_uuid
-        payload = build_payload
-        state = build_state(payload).to_json.to_s
+
+        access_token = get_access_token
+
+        payload = build_payload access_token
+        state = build_state(payload, access_token).to_json.to_s
 
         "#{base_url}/#{type}?state=#{Base64.strict_encode64(state)}"
       end
@@ -70,7 +74,7 @@ module Fintecture
         end
       end
 
-      def build_payload
+      def build_payload( access_token )
         attributes = {
             amount: @payment_attrs['amount'],
             currency: @payment_attrs['currency'],
@@ -89,19 +93,34 @@ module Fintecture
             attributes: attributes,
         }
 
-        {
-            data: data,
-            meta: meta
-        }
+        prepare_payload_response = prepare_payload(
+          {
+               data: data,
+               meta: meta
+          }, access_token)
+        JSON.parse(prepare_payload_response.body)
+      end
+
+      def prepare_payload(payload, access_token)
+        url = prepare_payload_endpoint
+
+        Fintecture::Faraday::Authentication::Connection.post(
+            url: url,
+            req_body: payload.to_json,
+            custom_content_type: 'application/json',
+            bearer: "Bearer #{access_token}"
+        )
+      end
+
+      def prepare_payload_endpoint
+        "#{api_base_url}/pis/v1/prepare"
       end
 
       def build_signature(payload)
         Fintecture::Utils::Crypto.sign_payload payload
       end
 
-      def build_state(payload)
-        access_token_response = Fintecture::Authentication.access_token
-        access_token = JSON.parse(access_token_response.body)['access_token']
+      def build_state(payload, access_token)
         {
             app_id: Fintecture.app_id,
             access_token: access_token,
@@ -131,6 +150,15 @@ module Fintecture
 
       def base_url
         Fintecture::Api::BaseUrl::FINTECTURE_CONNECT_URL[Fintecture.environment.to_sym]
+      end
+
+      def api_base_url
+        Fintecture::Api::BaseUrl::FINTECTURE_API_URL[Fintecture.environment.to_sym]
+      end
+
+      def get_access_token
+        access_token_response = Fintecture::Authentication.access_token
+        JSON.parse(access_token_response.body)['access_token']
       end
 
       def as_json(element)
