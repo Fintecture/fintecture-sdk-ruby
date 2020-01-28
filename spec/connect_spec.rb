@@ -1,7 +1,12 @@
+require 'json'
+require 'fintecture/pis'
+require 'fintecture/connect'
+require 'fintecture/exceptions'
+
 RSpec.describe Fintecture::Connect do
 
-  Fintecture.app_id = '65bfee30-1b5d-4687-83c7-286fb459feda'
-  Fintecture.app_secret = '66c41ebf-877d-40c9-9285-4485ebb27a76'
+  Fintecture.app_id = 'a229d811-0f17-4295-b135-99bb1cb2ca63'
+  Fintecture.app_secret = 'a50afa3e-fea5-4bb8-86bd-b52c945fc0e8'
   Fintecture.app_private_key = %q(-----BEGIN RSA PRIVATE KEY-----
 MIICXAIBAAKBgQCTiulmDq1iK1QIKHbVf3VHczHsd28gFfQJ3kAGq35cHgMgblwL
 S33ghNeeSN+Pix8MzqSII/4VU0t4pEue8XdWEUuvTXgLRia+Toca8on1MVOHU9OB
@@ -45,33 +50,39 @@ tq4hdFD19BJIy/d90QIDAQAB
       provider: 'provider',
       state: 'state'
   }
+
+  before(:each) do
+    access_token_response = Fintecture::Pis.get_access_token
+
+    @access_token = JSON.parse(access_token_response.body)['access_token']
+  end
   
   it "generate a correct URL" do
-    mock_url = "#{Fintecture::Api::BaseUrl::FINTECTURE_CONNECT_URL[Fintecture.environment.to_sym]}/pis?state=eyJhcHBfaWQiOiI2NWJmZWUzMC0xYjVkLTQ2ODctODNjNy0yODZmYjQ1OWZlZGEiLCJhY2Nlc3NfdG9rZW4iOm51bGwsInNpZ25hdHVyZV90eXBlIjoicnNhLXNoYTI1NiIsInNpZ25hdHVyZSI6IkE0QXk0aXNTL2gvTXdTZWVkeVFiTzZUQWxHeFgrbUlxcXNpYml2UkVnY3VIU0VSb1Z0RFdqM3RQaXluZjVjU0c0Mzk0SW14L2FvUGlidldwWU5DY3dJRkJac28xaFV4K2o0c1dhRGNNS2s2QWVZY3RYR3JRb3EvOHB5QlpSUjRFYm83RkM0WEFTT3BuQVpvZm5rZytMbE9iS2VWWW5ET2VjT00wOENuZEpSOD0iLCJyZWRpcmVjdF91cmkiOiJodHRwOi8vZXhhbXBsZS5jb20vY2FsbGJhY2siLCJvcmlnaW5fdXJpIjoiIiwic3RhdGUiOiJib2IiLCJwYXlsb2FkIjp7ImVycm9ycyI6W3sic3RhdHVzIjoiNDAxIiwiY29kZSI6ImludmFsaWRfdG9rZW4iLCJ0aXRsZSI6IkludmFsaWQgVG9rZW4iLCJtZXNzYWdlIjoiVGhlIHRva2VuIGlzIGVpdGhlciBpbnZhbGlkIG9yIGV4cGlyZWQuIn1dfSwidmVyc2lvbiI6IjAuMS42In0="
-    url = Fintecture::Connect.connect_url_pis(payment_attrs)
+    mock_url = "#{Fintecture::Api::BaseUrl::FINTECTURE_CONNECT_URL[Fintecture.environment.to_sym]}/pis?state="
+    url = Fintecture::Connect.connect_url_pis(@access_token, payment_attrs)
 
-    expect(mock_url).to eq url
+    expect(url).to include mock_url
   end
 
   it '#PIS connect_url_pis Error no amount' do
     test_payment_attrs = payment_attrs.clone
     test_payment_attrs.delete(:amount)
 
-    expect { Fintecture::Connect.connect_url_pis(test_payment_attrs) }.to raise_error('amount is a mandatory field')
+    expect { Fintecture::Connect.connect_url_pis(@access_token, test_payment_attrs) }.to raise_error(Fintecture::ValidationException, 'amount is a mandatory field')
   end
 
   it '#PIS connect_url_pis Error end_to_end_id no alphanumerical' do
     test_payment_attrs = payment_attrs.clone
     test_payment_attrs[:end_to_end_id] = 'ajlnca@'
 
-    expect { Fintecture::Connect.connect_url_pis(test_payment_attrs) }.to raise_error('end_to_end_id must be an alphanumeric string')
+    expect { Fintecture::Connect.connect_url_pis(@access_token, test_payment_attrs) }.to raise_error(Fintecture::ValidationException, 'end_to_end_id must be an alphanumeric string')
   end
 
   it '#PIS connect_url_pis Error no currency' do
     test_payment_attrs = payment_attrs.clone
     test_payment_attrs.delete(:currency)
 
-    expect { Fintecture::Connect.connect_url_pis(test_payment_attrs) }.to raise_error('currency is a mandatory field')
+    expect { Fintecture::Connect.connect_url_pis(@access_token, test_payment_attrs) }.to raise_error(Fintecture::ValidationException, 'currency is a mandatory field')
   end
 
   it 'verify_url_parameters should be true' do
@@ -92,40 +103,40 @@ tq4hdFD19BJIy/d90QIDAQAB
   end
 
   it 'verify_url_parameters invalid param type' do
-    expect { Fintecture::Connect.verify_url_parameters 'param' }.to raise_error('invalid parameter format, the parameter should be a Hash or an Object Model instead a String')
+    expect { Fintecture::Connect.verify_url_parameters 'param' }.to raise_error(Fintecture::ValidationException, 'invalid parameter format, the parameter should be a Hash or an Object Model instead a String')
   end
 
   it 'verify_url_parameters Error no digest' do
     callback_params_test = {app_id: Fintecture.app_id, app_secret: Fintecture.app_secret}.merge(callback_params)
 
-    expect { Fintecture::Connect.verify_url_parameters callback_params_test }.to raise_error('invalid post payment parameter s')
+    expect { Fintecture::Connect.verify_url_parameters callback_params_test }.to raise_error(Fintecture::ValidationException, 'invalid post payment parameter s')
   end
 
   it 'verify_url_parameters Error no session_id' do
     callback_params_test = {app_id: Fintecture.app_id, app_secret: Fintecture.app_secret, s: 's'}.merge(callback_params)
     callback_params_test.delete(:session_id)
 
-    expect { Fintecture::Connect.verify_url_parameters callback_params_test }.to raise_error('invalid post payment parameter session_id')
+    expect { Fintecture::Connect.verify_url_parameters callback_params_test }.to raise_error(Fintecture::ValidationException, 'invalid post payment parameter session_id')
   end
 
   it 'verify_url_parameters Error no status' do
     callback_params_test = {app_id: Fintecture.app_id, app_secret: Fintecture.app_secret, s: 's'}.merge(callback_params)
     callback_params_test.delete(:status)
 
-    expect { Fintecture::Connect.verify_url_parameters callback_params_test }.to raise_error('invalid post payment parameter status')
+    expect { Fintecture::Connect.verify_url_parameters callback_params_test }.to raise_error(Fintecture::ValidationException, 'invalid post payment parameter status')
   end
 
   it 'verify_url_parameters Error no customer_id' do
     callback_params_test = {app_id: Fintecture.app_id, app_secret: Fintecture.app_secret, s: 's'}.merge(callback_params)
     callback_params_test.delete(:customer_id)
 
-    expect { Fintecture::Connect.verify_url_parameters callback_params_test }.to raise_error('invalid post payment parameter customer_id')
+    expect { Fintecture::Connect.verify_url_parameters callback_params_test }.to raise_error(Fintecture::ValidationException, 'invalid post payment parameter customer_id')
   end
 
   it 'verify_url_parameters Error no provider' do
     callback_params_test = {app_id: Fintecture.app_id, app_secret: Fintecture.app_secret, s: 's'}.merge(callback_params)
     callback_params_test.delete(:provider)
 
-    expect { Fintecture::Connect.verify_url_parameters callback_params_test }.to raise_error('invalid post payment parameter provider')
+    expect { Fintecture::Connect.verify_url_parameters callback_params_test }.to raise_error(Fintecture::ValidationException, 'invalid post payment parameter provider')
   end
 end

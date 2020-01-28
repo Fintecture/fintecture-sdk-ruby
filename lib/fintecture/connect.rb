@@ -1,17 +1,21 @@
 require 'base64'
 require 'json'
 require 'faraday'
+require 'fintecture/pis'
+require 'fintecture/utils/validation'
+require 'fintecture/exceptions'
 
 module Fintecture
   class Connect
     class << self
       SIGNATURE_TYPE = 'rsa-sha256'.freeze
 
-      def connect_url_pis(payment_attrs = nil)
-        connect_url(payment_attrs: payment_attrs, type: 'pis')
+      def connect_url_pis(access_token = nil, payment_attrs = nil)
+        connect_url(access_token, payment_attrs, type: 'pis')
       end
 
-      def connect_url(payment_attrs: nil, type: 'pis')
+      def connect_url(access_token = nil, payment_attrs = nil, type: nil)
+        @access_token = access_token
         @payment_attrs = as_json payment_attrs
         @type = type
 
@@ -19,10 +23,8 @@ module Fintecture
 
         @payment_attrs['end_to_end_id'] ||= Fintecture::Utils::Crypto.generate_uuid
 
-        access_token = get_access_token
-
-        payload = build_payload access_token
-        state = build_state(payload, access_token).to_json.to_s
+        payload = build_payload
+        state = build_state(payload).to_json.to_s
 
         "#{base_url}/#{type}?state=#{Base64.strict_encode64(state)}"
       end
@@ -40,41 +42,37 @@ module Fintecture
 
       private
 
-      def raise_if_klass_mismatch(target, klass, param_name = nil)
-        return if target.is_a? klass
-
-        raise "invalid #{param_name ? param_name : 'parameter'} format, the parameter should be a #{klass} instead a #{target.class.name}"
-      end
-
       def validate_payment_integrity
-        raise_if_klass_mismatch @payment_attrs, Hash, 'payment_attrs'
+        Fintecture::Utils::Validation.raise_if_klass_mismatch @payment_attrs, Hash, 'payment_attrs'
+
+        raise Fintecture::ValidationException.new("access_token is a mandatory field") if @access_token.nil?
 
         error_msg = 'invalid payment payload parameter'
 
-        raise "#{error_msg} type" unless %w[pis ais].include? @type
+        raise Fintecture::ValidationException.new("#{error_msg} type") unless %w[pis ais].include? @type
 
-        raise 'end_to_end_id must be an alphanumeric string' if(@payment_attrs['end_to_end_id'] && !@payment_attrs['end_to_end_id'].match(/^[0-9a-zA-Z]*$/))
+        raise Fintecture::ValidationException.new('end_to_end_id must be an alphanumeric string') if(@payment_attrs['end_to_end_id'] && !@payment_attrs['end_to_end_id'].match(/^[0-9a-zA-Z]*$/))
 
         %w[amount currency customer_full_name customer_email customer_ip redirect_uri].each do |param|
-          raise "#{param} is a mandatory field" if @payment_attrs[param].nil?
+          raise Fintecture::ValidationException.new("#{param} is a mandatory field") if @payment_attrs[param].nil?
         end
 
         # Check if string
         %w[communication redirect_uri].each do |param|
-          raise_if_klass_mismatch(@payment_attrs[param], String, param) if(@payment_attrs[param])
+          Fintecture::Utils::Validation.raise_if_klass_mismatch(@payment_attrs[param], String, param) if(@payment_attrs[param])
         end
 
       end
 
       def validate_post_payment_integrity
-        raise_if_klass_mismatch @post_payment_attrs, Hash, 'post_payment_attrs'
+        Fintecture::Utils::Validation.raise_if_klass_mismatch @post_payment_attrs, Hash, 'post_payment_attrs'
 
         %w[s state status session_id customer_id provider].each do |param|
-          raise "invalid post payment parameter #{param}" if @post_payment_attrs[param].nil?
+          raise Fintecture::ValidationException.new("invalid post payment parameter #{param}") if @post_payment_attrs[param].nil?
         end
       end
 
-      def build_payload( access_token )
+      def build_payload
         attributes = {
             amount: @payment_attrs['amount'],
             currency: @payment_attrs['currency'],
@@ -93,37 +91,22 @@ module Fintecture
             attributes: attributes,
         }
 
-        prepare_payload_response = prepare_payload(
+        prepare_payload_response = Fintecture::Pis.prepare_payload(
           {
                data: data,
                meta: meta
-          }, access_token)
+          }, @access_token)
         JSON.parse(prepare_payload_response.body)
-      end
-
-      def prepare_payload(payload, access_token)
-        url = prepare_payload_endpoint
-
-        Fintecture::Faraday::Authentication::Connection.post(
-            url: url,
-            req_body: payload.to_json,
-            custom_content_type: 'application/json',
-            bearer: "Bearer #{access_token}"
-        )
-      end
-
-      def prepare_payload_endpoint
-        "#{api_base_url}/pis/v1/prepare"
       end
 
       def build_signature(payload)
         Fintecture::Utils::Crypto.sign_payload payload
       end
 
-      def build_state(payload, access_token)
+      def build_state(payload)
         {
             app_id: Fintecture.app_id,
-            access_token: access_token,
+            access_token: @access_token,
             signature_type: SIGNATURE_TYPE,
             signature: build_signature(payload),
             redirect_uri: @payment_attrs['redirect_uri'] || '',
@@ -152,22 +135,13 @@ module Fintecture
         Fintecture::Api::BaseUrl::FINTECTURE_CONNECT_URL[Fintecture.environment.to_sym]
       end
 
-      def api_base_url
-        Fintecture::Api::BaseUrl::FINTECTURE_API_URL[Fintecture.environment.to_sym]
-      end
-
-      def get_access_token
-        access_token_response = Fintecture::Authentication.access_token
-        JSON.parse(access_token_response.body)['access_token']
-      end
-
       def as_json(element)
           return JSON(element.to_json) if element.is_a? Hash
 
           begin
             element.as_json
           rescue NoMethodError
-            raise "invalid parameter format, the parameter should be a Hash or an Object Model instead a #{element.class.name}"
+            raise Fintecture::ValidationException.new("invalid parameter format, the parameter should be a Hash or an Object Model instead a #{element.class.name}")
           end
       end
     end
