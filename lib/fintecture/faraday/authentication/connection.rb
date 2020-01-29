@@ -1,5 +1,8 @@
 require 'base64'
 require 'faraday'
+require 'uri'
+require 'time'
+require 'fintecture/utils/crypto'
 
 module Fintecture
   module Faraday
@@ -18,7 +21,7 @@ module Fintecture
             conn = connection(url)
 
             conn.post do |req|
-              req.headers = req_headers(custom_content_type, bearer, secure_headers)
+              req.headers = req_headers(custom_content_type, bearer, secure_headers, method: 'post', body: req_body, url: url)
               req.body = req_body
             end
           end
@@ -27,22 +30,37 @@ module Fintecture
             conn = connection(url)
 
             conn.get do |req|
-              req.headers = req_headers(custom_content_type, bearer, secure_headers)
+              req.headers = req_headers(custom_content_type, bearer, secure_headers, method: 'get', url: url)
               req.body = req_body
             end
           end
 
-          def req_headers(custom_content_type, bearer, secure_headers)
+          def req_headers(custom_content_type, bearer, secure_headers, method: '', body: {}, url:)
             client_token = Base64.strict_encode64("#{Fintecture.app_id}:#{Fintecture.app_secret}")
 
-            min_headers = {
+            {
                 'Accept' => 'application/json',
                 'User-Agent' => "Fintecture Ruby SDK v #{Fintecture::VERSION}",
                 'Authorization' => bearer ? bearer : "Basic #{client_token}",
                 'Content-Type' => custom_content_type ? custom_content_type : 'application/x-www-form-urlencoded',
-            }
+            }.merge(secure_headers ? req_secure_headers(body: body, url: url, method: method) : {})
 
-            min_headers
+          end
+
+          def req_secure_headers(body: {}, url: '', method: '')
+            payload = ( body.class.name == 'String' ? body : body.to_s )
+            path_name = URI(url).path
+            headers = {
+                'Date' => Time.now.utc.strftime("%a, %d %b %Y %H:%M:%S GMT").to_s,
+                'X-Request-Id' => Fintecture::Utils::Crypto.generate_uuid
+            }.merge(payload ? load_digest(payload) : {})
+
+            headers['Signature'] = Fintecture::Utils::Crypto.create_signature_header({'(request-target)' => "#{method.downcase} #{path_name}"}.merge(headers))
+            headers
+          end
+
+          def load_digest(payload)
+            {'Digest' => "SHA-256=#{Fintecture::Utils::Crypto.hash_base64(payload)}"}
           end
 
         end

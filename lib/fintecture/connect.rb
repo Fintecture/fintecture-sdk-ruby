@@ -21,7 +21,7 @@ module Fintecture
 
         validate_payment_integrity
 
-        @payment_attrs['end_to_end_id'] ||= Fintecture::Utils::Crypto.generate_uuid
+        @payment_attrs['end_to_end_id'] ||= Fintecture::Utils::Crypto.generate_uuid_only_chars
 
         payload = build_payload
         state = build_state(payload).to_json.to_s

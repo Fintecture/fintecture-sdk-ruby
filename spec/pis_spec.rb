@@ -36,6 +36,23 @@ WosgDj9AGW6w4ETDnTGCA1Q=
 
   Fintecture.environment = 'sandbox'
 
+  payload_attr = {
+      data: {
+          type: 'PIS',
+          attributes: {
+              amount: 125,
+              currency: 'EUR',
+              communication: "Thank's mom",
+              end_to_end_id: '5f78e902907e4209aa8df63659b05d24'
+          }
+      },
+      meta: {
+          psu_name: 'Test bot',
+          psu_email: 'email@test.com',
+          psu_ip: '192.168.0.1'
+      }
+  }
+
   it "get access token" do
     access_token_response = Fintecture::Pis.get_access_token
 
@@ -49,37 +66,48 @@ WosgDj9AGW6w4ETDnTGCA1Q=
     expect(!!expires_in).to be_truthy
   end
 
-  it 'prepare payload' do
+  it 'prepare payment' do
     access_token_response = Fintecture::Pis.get_access_token
 
     access_token = access_token_response['access_token']
 
-    payload_attr = {
-        data: {
-            type: 'PIS',
-            attributes: {
-                amount: 125,
-                currency: 'EUR',
-                communication: "Thank's mom",
-                end_to_end_id: '5f78e902907e4209aa8df63659b05d24'
-            }
-        },
-        meta: {
-            psu_name: 'Test bot',
-            psu_email: 'email@test.com',
-            psu_ip: '192.168.0.1'
-        }
-    }
-
     prepare_response = Fintecture::Pis.prepare_payment access_token, payload_attr
-    access_token_response_body = JSON.parse prepare_response.body
+    prepare_response_body = JSON.parse prepare_response.body
 
-    meta = access_token_response_body['meta']
+    meta = prepare_response_body['meta']
 
     expect(meta['session_id']).not_to be_empty
     expect(meta['status']).to eq('provider_required')
     expect(meta['title']).to eq('Payment Prepared')
     expect(meta['code']).to eq(201)
 
+  end
+
+  it 'get payments' do
+    access_token_response = Fintecture::Pis.get_access_token
+
+    access_token = access_token_response['access_token']
+
+    prepare_response = Fintecture::Pis.prepare_payment access_token, payload_attr
+    prepare_response_body = JSON.parse prepare_response.body
+
+    session_id = prepare_response_body['meta']['session_id']
+
+    payment_response = Fintecture::Pis.get_payments access_token, session_id
+    payment_response_body = JSON.parse payment_response.body
+
+    meta = payment_response_body['meta']
+    data = payment_response_body['data']
+    attributes = payment_response_body['data']['attributes']
+
+    expect(meta['session_id']).not_to be_empty
+    expect(meta['status']).to eq('provider_required')
+    expect(meta['code']).to eq(200)
+
+    expect(data['type']).to eq('PIS')
+    expect(attributes['amount']).to eq(125)
+    expect(attributes['currency']).to eq('EUR')
+    expect(attributes['communication']).to eq("Thank's mom")
+    expect(attributes['end_to_end_id']).to eq('5f78e902907e4209aa8df63659b05d24')
   end
 end
