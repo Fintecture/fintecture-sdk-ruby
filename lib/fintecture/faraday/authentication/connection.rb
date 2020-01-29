@@ -1,8 +1,8 @@
 require 'base64'
 require 'faraday'
 require 'uri'
-require 'time'
 require 'fintecture/utils/crypto'
+require 'fintecture/utils/date'
 
 module Fintecture
   module Faraday
@@ -51,7 +51,7 @@ module Fintecture
             payload = ( body.class.name == 'String' ? body : body.to_s )
             path_name = URI(url).path
             headers = {
-                'Date' => Time.now.utc.strftime("%a, %d %b %Y %H:%M:%S GMT").to_s,
+                'Date' => Fintecture::Utils::Date.header_time.to_s,
                 'X-Request-Id' => Fintecture::Utils::Crypto.generate_uuid
             }.merge(payload ? load_digest(payload) : {})
 
