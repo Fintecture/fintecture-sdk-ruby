@@ -4,6 +4,7 @@ require 'faraday'
 require 'fintecture/pis'
 require 'fintecture/utils/validation'
 require 'fintecture/exceptions'
+require 'fintecture/utils/date'
 
 module Fintecture
   class Connect
@@ -26,7 +27,10 @@ module Fintecture
         payload = build_payload
         state = build_state(payload).to_json.to_s
 
-        "#{base_url}/#{type}?state=#{Base64.strict_encode64(state)}"
+        {
+            url: "#{base_url}/#{type}?state=#{Base64.strict_encode64(state)}",
+            session_id: payload[:meta][:session_id]
+        }
       end
 
       def verify_url_parameters(parameters = nil)
@@ -95,19 +99,25 @@ module Fintecture
                data: data,
                meta: meta
           })
-        JSON.parse(prepare_payment_response.body)
+        prepare_payment_response_body = JSON.parse(prepare_payment_response.body)
+        {meta: {session_id: prepare_payment_response_body['meta']['session_id']}}
       end
 
-      def build_signature(payload)
-        Fintecture::Utils::Crypto.sign_payload payload
+      def build_signature(payload, date, x_request_id)
+        digest = Fintecture::Utils::Crypto.hash_base64(payload.to_json.to_s)
+        Fintecture::Utils::Crypto.sign_payload "date: #{date}\ndigest: SHA-256=#{digest}=\nx-request-id: #{x_request_id}"
       end
 
       def build_state(payload)
+        header_time = Fintecture::Utils::Date.header_time
+        x_request_id = Fintecture::Utils::Crypto.generate_uuid
         {
             app_id: Fintecture.app_id,
             access_token: @access_token,
+            date: header_time,
+            'x-request-id': x_request_id,
             signature_type: SIGNATURE_TYPE,
-            signature: build_signature(payload),
+            signature: build_signature(payload, header_time, x_request_id),
             redirect_uri: @payment_attrs['redirect_uri'] || '',
             origin_uri: @payment_attrs['origin_uri'] || '',
             state: @payment_attrs['state'],

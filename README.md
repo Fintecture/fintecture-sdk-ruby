@@ -76,7 +76,9 @@ payment_attrs = {
     state: 'somestate'
 }
 tokens = Fintecture::Pis.get_access_token
-url = Fintecture::Connect.get_pis_connect tokens['access_token'], payment_attrs
+connect_response = Fintecture::Connect.get_pis_connect tokens['access_token'], payment_attrs
+url = connect_response[:url]
+
 ```
 Explanation of each field:
 
