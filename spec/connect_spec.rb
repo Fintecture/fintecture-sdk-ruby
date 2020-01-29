@@ -7,7 +7,7 @@ RSpec.describe Fintecture::Connect do
 
   Fintecture.app_id = 'a229d811-0f17-4295-b135-99bb1cb2ca63'
   Fintecture.app_secret = 'a50afa3e-fea5-4bb8-86bd-b52c945fc0e8'
-  Fintecture.app_private_key = %q(-----BEGIN RSA PRIVATE KEY-----
+  Fintecture.private_key = %q(-----BEGIN RSA PRIVATE KEY-----
 MIICXAIBAAKBgQCTiulmDq1iK1QIKHbVf3VHczHsd28gFfQJ3kAGq35cHgMgblwL
 S33ghNeeSN+Pix8MzqSII/4VU0t4pEue8XdWEUuvTXgLRia+Toca8on1MVOHU9OB
 4M18bDnA4wn19Krq/ac9i2/r8xLtxuf2ysR+gu9Btq4hdFD19BJIy/d90QIDAQAB
@@ -54,35 +54,35 @@ tq4hdFD19BJIy/d90QIDAQAB
   before(:each) do
     access_token_response = Fintecture::Pis.get_access_token
 
-    @access_token = JSON.parse(access_token_response.body)['access_token']
+    @access_token = access_token_response['access_token']
   end
   
   it "generate a correct URL" do
     mock_url = "#{Fintecture::Api::BaseUrl::FINTECTURE_CONNECT_URL[Fintecture.environment.to_sym]}/pis?state="
-    url = Fintecture::Connect.connect_url_pis(@access_token, payment_attrs)
+    url = Fintecture::Connect.get_pis_connect(@access_token, payment_attrs)
 
     expect(url).to include mock_url
   end
 
-  it '#PIS connect_url_pis Error no amount' do
+  it '#PIS get_pis_connect Error no amount' do
     test_payment_attrs = payment_attrs.clone
     test_payment_attrs.delete(:amount)
 
-    expect { Fintecture::Connect.connect_url_pis(@access_token, test_payment_attrs) }.to raise_error(Fintecture::ValidationException, 'amount is a mandatory field')
+    expect { Fintecture::Connect.get_pis_connect(@access_token, test_payment_attrs) }.to raise_error(Fintecture::ValidationException, 'amount is a mandatory field')
   end
 
-  it '#PIS connect_url_pis Error end_to_end_id no alphanumerical' do
+  it '#PIS get_pis_connect Error end_to_end_id no alphanumerical' do
     test_payment_attrs = payment_attrs.clone
     test_payment_attrs[:end_to_end_id] = 'ajlnca@'
 
-    expect { Fintecture::Connect.connect_url_pis(@access_token, test_payment_attrs) }.to raise_error(Fintecture::ValidationException, 'end_to_end_id must be an alphanumeric string')
+    expect { Fintecture::Connect.get_pis_connect(@access_token, test_payment_attrs) }.to raise_error(Fintecture::ValidationException, 'end_to_end_id must be an alphanumeric string')
   end
 
-  it '#PIS connect_url_pis Error no currency' do
+  it '#PIS get_pis_connect Error no currency' do
     test_payment_attrs = payment_attrs.clone
     test_payment_attrs.delete(:currency)
 
-    expect { Fintecture::Connect.connect_url_pis(@access_token, test_payment_attrs) }.to raise_error(Fintecture::ValidationException, 'currency is a mandatory field')
+    expect { Fintecture::Connect.get_pis_connect(@access_token, test_payment_attrs) }.to raise_error(Fintecture::ValidationException, 'currency is a mandatory field')
   end
 
   it 'verify_url_parameters should be true' do

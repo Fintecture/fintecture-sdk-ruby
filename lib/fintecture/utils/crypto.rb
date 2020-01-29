@@ -17,7 +17,7 @@ module Fintecture
           payload = payload.to_json.to_s if payload.is_a? Hash
 
           digest = OpenSSL::Digest::SHA256.new
-          private_key = OpenSSL::PKey::RSA.new(Fintecture.app_private_key)
+          private_key = OpenSSL::PKey::RSA.new(Fintecture.private_key)
 
           begin
             signature = private_key.sign(digest, payload)
@@ -29,7 +29,7 @@ module Fintecture
 
         def decrypt_private(digest)
           encrypted_string = Base64.decode64(digest)
-          private_key = OpenSSL::PKey::RSA.new(Fintecture.app_private_key)
+          private_key = OpenSSL::PKey::RSA.new(Fintecture.private_key)
 
           begin
             private_key.private_decrypt(encrypted_string, OpenSSL::PKey::RSA::PKCS1_OAEP_PADDING)

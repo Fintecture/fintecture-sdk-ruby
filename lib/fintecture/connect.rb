@@ -10,7 +10,7 @@ module Fintecture
     class << self
       SIGNATURE_TYPE = 'rsa-sha256'.freeze
 
-      def connect_url_pis(access_token = nil, payment_attrs = nil)
+      def get_pis_connect(access_token = nil, payment_attrs = nil)
         connect_url(access_token, payment_attrs, type: 'pis')
       end
 
@@ -91,12 +91,11 @@ module Fintecture
             attributes: attributes,
         }
 
-        prepare_payload_response = Fintecture::Pis.prepare_payload(
-          {
+        prepare_payment_response = Fintecture::Pis.prepare_payment( @access_token, {
                data: data,
                meta: meta
-          }, @access_token)
-        JSON.parse(prepare_payload_response.body)
+          })
+        JSON.parse(prepare_payment_response.body)
       end
 
       def build_signature(payload)

@@ -33,7 +33,7 @@ Initialize your client credentials
 ```ruby
 Fintecture.app_id = 'your_app_id'
 Fintecture.app_secret = 'your_app_secret'
-Fintecture.app_private_key = %q(your_app_private_key)
+Fintecture.private_key = %q(your_private_key)
 ```
     
     
@@ -56,7 +56,7 @@ You can also see the available environments
 #### Access token
 
 ```ruby
-Fintecture::Authentication.access_token
+Fintecture::Pis.get_access_token
 ```
 
 ### Connect 
@@ -75,7 +75,8 @@ payment_attrs = {
     origin_uri: '',
     state: 'somestate'
 }
-url = Fintecture::Connect.connect_url_pis payment_attrs
+tokens = Fintecture::Pis.get_access_token
+url = Fintecture::Connect.get_pis_connect tokens['access_token'], payment_attrs
 ```
 Explanation of each field:
 

@@ -32,7 +32,7 @@ module Fintecture
   ENVIRONMENTS = %w[local sandbox production].freeze
 
   class << self
-    attr_accessor :app_id, :app_secret, :app_private_key
+    attr_accessor :app_id, :app_secret, :private_key
 
     def environment=(environment)
       environment = environment.downcase
