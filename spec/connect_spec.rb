@@ -46,6 +46,7 @@ zwIDAQAB
 -----END PUBLIC KEY-----)
   Fintecture.environment = 'sandbox'
 
+
   payment_attrs = {
       amount: 125,
       currency: 'EUR',

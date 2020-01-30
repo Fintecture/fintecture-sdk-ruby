@@ -100,7 +100,10 @@ module Fintecture
                meta: meta
           })
         prepare_payment_response_body = JSON.parse(prepare_payment_response.body)
-        {meta: {session_id: prepare_payment_response_body['meta']['session_id']}}
+        {
+            meta: {session_id: prepare_payment_response_body['meta']['session_id']},
+            data: { attributes: {amount: @payment_attrs['amount'], currency: @payment_attrs['currency']}}
+        }
       end
 
       def build_signature(payload, date, x_request_id)
