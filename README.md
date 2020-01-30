@@ -10,12 +10,6 @@ Add this line to your application's Gemfile:
 gem 'fintecture'
 ```
 
-or install it through our github repository
-
-```ruby
-gem 'fintecture', github: 'Fintecture/fintecture-sdk-ruby'
-```
-
 And then execute:
 
     $ bundle
@@ -73,7 +67,9 @@ payment_attrs = {
     end_to_end_id: '5f78e902907e4209aa8df63659b05d24', # uuid optional
     redirect_uri: 'http://example.com/callback',
     origin_uri: '',
-    state: 'somestate'
+    state: 'somestate',
+    psu_type: 'retail',
+    country: 'fr'
 }
 tokens = Fintecture::Pis.get_access_token
 connect_response = Fintecture::Connect.get_pis_connect tokens['access_token'], payment_attrs
@@ -85,13 +81,15 @@ Explanation of each field:
 * amount: **[mandatory]** The amount of the payment initiation request. Min 1.00 and Max is variable based on bank's policy.
 * currency: **[mandatory]** The currency of the payment initiation request. Currently, only EUR and GBP is supported.
 * communication: **[optional]** A message sent to the beneficiary of the payment and visible on his bank statement. In the context of ecommerce payment collection, the order reference is inputted here (with an optional prefer ex: REF#23444)
-* customer_full_name: **[mandatory]** the full name of the payer
-* customer_email: **[mandatory]** the email of the payer
-* customer_ip: **[mandatory]** the ip address of the payer
-* end_to_end_id: **[optional]** unique id of the payment which is sent to the bank but is invisible to the customer. Max 42 character string.
-* redirect_uri: **[mandatory]** the callback URL to which the customer is redirected after authentication with his bank
-* origin_uri: **[optional]** a  URL to which the customer will be redirected if he wants to exit Fintecture Connect
+* customer_full_name: **[mandatory]** The full name of the payer
+* customer_email: **[mandatory]** The email of the payer
+* customer_ip: **[mandatory]** The ip address of the payer
+* end_to_end_id: **[optional]** Unique id of the payment which is sent to the bank but is invisible to the customer. Max 42 character string.
+* redirect_uri: **[mandatory]** The callback URL to which the customer is redirected after authentication with his bank
+* origin_uri: **[optional]** A URL to which the customer will be redirected if he wants to exit Fintecture Connect
 * state: **[optional]** A state parameter which is sent back on callback
+* retail: **[optional]** Possible values are **retail** and **corporate** (retail by default)
+* country: **[optional]** Loads a specific collection of providers filter by country
     
 #### Verify URL parameters
 

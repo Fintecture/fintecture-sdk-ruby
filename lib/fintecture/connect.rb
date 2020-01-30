@@ -5,6 +5,7 @@ require 'fintecture/pis'
 require 'fintecture/utils/validation'
 require 'fintecture/exceptions'
 require 'fintecture/utils/date'
+require 'fintecture/utils/constants'
 
 module Fintecture
   class Connect
@@ -28,7 +29,7 @@ module Fintecture
         state = build_state(payload).to_json.to_s
 
         {
-            url: "#{base_url}/#{type}?state=#{Base64.strict_encode64(state)}",
+            url: build_url(state),
             session_id: payload[:meta][:session_id]
         }
       end
@@ -46,14 +47,22 @@ module Fintecture
 
       private
 
+      def build_url(state)
+        "#{base_url}/#{@type}/#{@payment_attrs['psu_type']}/#{@payment_attrs['country']}?state=#{Base64.strict_encode64(state)}"
+      end
+
       def validate_payment_integrity
         Fintecture::Utils::Validation.raise_if_klass_mismatch @payment_attrs, Hash, 'payment_attrs'
 
         raise Fintecture::ValidationException.new("access_token is a mandatory field") if @access_token.nil?
 
+        @payment_attrs['psu_type'] = 'retail' unless @payment_attrs['psu_type']
+        @payment_attrs['country'] = 'all' unless @payment_attrs['country']
+
         error_msg = 'invalid payment payload parameter'
 
-        raise Fintecture::ValidationException.new("#{error_msg} type") unless %w[pis ais].include? @type
+        raise Fintecture::ValidationException.new("#{error_msg} type") unless Fintecture::Utils::Constants::SCOPES.include? @type
+        raise Fintecture::ValidationException.new("#{@payment_attrs['psu_type']} PSU type not allowed") unless Fintecture::Utils::Constants::PSU_TYPES.include? @payment_attrs['psu_type']
 
         raise Fintecture::ValidationException.new('end_to_end_id must be an alphanumeric string') if(@payment_attrs['end_to_end_id'] && !@payment_attrs['end_to_end_id'].match(/^[0-9a-zA-Z]*$/))
 
@@ -107,8 +116,11 @@ module Fintecture
       end
 
       def build_signature(payload, date, x_request_id)
-        digest = Fintecture::Utils::Crypto.hash_base64(payload.to_json.to_s)
-        Fintecture::Utils::Crypto.sign_payload "date: #{date}\ndigest: SHA-256=#{digest}=\nx-request-id: #{x_request_id}"
+        date_string = "x-date: #{date}"
+        digest_string = "digest: SHA-256=#{Fintecture::Utils::Crypto.hash_base64(payload.to_json)}"
+        x_request_id_string = "x-request-id: #{x_request_id}"
+
+        Fintecture::Utils::Crypto.sign_payload "#{digest_string}\n#{date_string}\n#{x_request_id_string}"
       end
 
       def build_state(payload)
@@ -124,8 +136,7 @@ module Fintecture
             redirect_uri: @payment_attrs['redirect_uri'] || '',
             origin_uri: @payment_attrs['origin_uri'] || '',
             state: @payment_attrs['state'],
-            payload: payload,
-            version: Fintecture::VERSION,
+            payload: payload
         }
       end
 
