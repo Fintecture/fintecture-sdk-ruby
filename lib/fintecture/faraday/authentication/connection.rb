@@ -52,7 +52,7 @@ module Fintecture
             path_name = URI(url).path
             headers = {
                 'Date' => Fintecture::Utils::Date.header_time.to_s,
-                'X-Request-Id' => Fintecture::Utils::Crypto.generate_uuid
+                'X-Request-ID' => Fintecture::Utils::Crypto.generate_uuid
             }.merge(payload ? load_digest(payload) : {})
 
             headers['Signature'] = Fintecture::Utils::Crypto.create_signature_header({'(request-target)' => "#{method.downcase} #{path_name}"}.merge(headers))

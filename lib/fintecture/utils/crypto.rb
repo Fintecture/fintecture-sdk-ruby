@@ -4,7 +4,7 @@ require 'base64'
 require 'json'
 require 'fintecture/exceptions'
 require 'fintecture/utils/constants'
-
+require 'uri'
 
 module Fintecture
   module Utils
@@ -34,11 +34,14 @@ module Fintecture
         end
 
         def decrypt_private(digest)
+          digest = URI.unescape digest
           encrypted_string = Base64.decode64(digest)
           private_key = OpenSSL::PKey::RSA.new(Fintecture.private_key)
 
           begin
             private_key.private_decrypt(encrypted_string, OpenSSL::PKey::RSA::PKCS1_OAEP_PADDING)
+          rescue OpenSSL::PKey::RSAError => e
+            raise Fintecture::CryptoException.new("error while decrypt, #{e.message}")
           rescue
             raise Fintecture::CryptoException.new('error during decryption')
           end
