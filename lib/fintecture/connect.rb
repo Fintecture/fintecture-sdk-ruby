@@ -130,7 +130,7 @@ module Fintecture
             app_id: Fintecture.app_id,
             access_token: @access_token,
             date: header_time,
-            'x-request-id': x_request_id,
+            request_id: x_request_id,
             signature_type: SIGNATURE_TYPE,
             signature: build_signature(payload, header_time, x_request_id),
             redirect_uri: @payment_attrs['redirect_uri'] || '',
