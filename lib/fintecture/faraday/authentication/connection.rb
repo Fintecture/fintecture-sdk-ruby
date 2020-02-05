@@ -50,12 +50,16 @@ module Fintecture
           def req_secure_headers(body: {}, url: '', method: '')
             payload = ( body.class.name == 'String' ? body : body.to_s )
             path_name = URI(url).path
+            search_params = URI(url).query
+
             headers = {
                 'Date' => Fintecture::Utils::Date.header_time.to_s,
                 'X-Request-ID' => Fintecture::Utils::Crypto.generate_uuid
             }.merge(payload ? load_digest(payload) : {})
 
-            headers['Signature'] = Fintecture::Utils::Crypto.create_signature_header({'(request-target)' => "#{method.downcase} #{path_name}"}.merge(headers))
+            request_target = search_params ? "#{method.downcase} #{path_name}?#{search_params}" : "#{method.downcase} #{path_name}"
+
+            headers['Signature'] = Fintecture::Utils::Crypto.create_signature_header({'(request-target)' => request_target}.merge(headers))
             headers
           end
 
