@@ -26,10 +26,10 @@ module Fintecture
         @payment_attrs['end_to_end_id'] ||= Fintecture::Utils::Crypto.generate_uuid_only_chars
 
         payload = build_payload
-        state = build_state(payload).to_json.to_s
+        config = build_config(payload).to_json.to_s
 
         {
-            url: build_url(state),
+            url: build_url(config),
             session_id: payload[:meta][:session_id]
         }
       end
@@ -47,8 +47,8 @@ module Fintecture
 
       private
 
-      def build_url(state)
-        "#{base_url}/#{@type}/#{@payment_attrs['psu_type']}/#{@payment_attrs['country']}?state=#{Base64.strict_encode64(state)}"
+      def build_url(config)
+        "#{base_url}/#{@type}/#{@payment_attrs['psu_type']}/#{@payment_attrs['country']}?config=#{Base64.strict_encode64(config)}"
       end
 
       def validate_payment_integrity
@@ -123,7 +123,7 @@ module Fintecture
         Fintecture::Utils::Crypto.sign_payload "#{digest_string}\n#{date_string}\n#{x_request_id_string}"
       end
 
-      def build_state(payload)
+      def build_config(payload)
         header_time = Fintecture::Utils::Date.header_time
         x_request_id = Fintecture::Utils::Crypto.generate_uuid
         {

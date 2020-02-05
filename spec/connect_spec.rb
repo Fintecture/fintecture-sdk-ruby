@@ -162,7 +162,7 @@ TQIDAQAB
     test_payment_attrs = payment_attrs.clone
     test_payment_attrs.delete(:country)
 
-    mock_url = "#{Fintecture::Api::BaseUrl::FINTECTURE_CONNECT_URL[Fintecture.environment.to_sym]}/pis/retail/all?state="
+    mock_url = "#{Fintecture::Api::BaseUrl::FINTECTURE_CONNECT_URL[Fintecture.environment.to_sym]}/pis/retail/all?config="
     url_response = Fintecture::Connect.get_pis_connect(@access_token, test_payment_attrs)
 
     expect(url_response[:url]).to include mock_url
@@ -172,7 +172,7 @@ TQIDAQAB
     test_payment_attrs = payment_attrs.clone
     test_payment_attrs.delete(:psu_type)
 
-    mock_url = "#{Fintecture::Api::BaseUrl::FINTECTURE_CONNECT_URL[Fintecture.environment.to_sym]}/pis/retail/fr?state="
+    mock_url = "#{Fintecture::Api::BaseUrl::FINTECTURE_CONNECT_URL[Fintecture.environment.to_sym]}/pis/retail/fr?config="
     url_response = Fintecture::Connect.get_pis_connect(@access_token, test_payment_attrs)
 
     expect(url_response[:url]).to include mock_url
@@ -182,7 +182,7 @@ TQIDAQAB
     test_payment_attrs = payment_attrs.clone
     test_payment_attrs.delete(:country)
 
-    mock_url = "#{Fintecture::Api::BaseUrl::FINTECTURE_CONNECT_URL[Fintecture.environment.to_sym]}/pis/retail/all?state="
+    mock_url = "#{Fintecture::Api::BaseUrl::FINTECTURE_CONNECT_URL[Fintecture.environment.to_sym]}/pis/retail/all?config="
     url_response = Fintecture::Connect.get_pis_connect(@access_token, test_payment_attrs)
 
     expect(url_response[:url]).to include mock_url
@@ -193,7 +193,7 @@ TQIDAQAB
     test_payment_attrs[:psu_type] = 'corporate'
     test_payment_attrs.delete(:country)
 
-    mock_url = "#{Fintecture::Api::BaseUrl::FINTECTURE_CONNECT_URL[Fintecture.environment.to_sym]}/pis/corporate/all?state="
+    mock_url = "#{Fintecture::Api::BaseUrl::FINTECTURE_CONNECT_URL[Fintecture.environment.to_sym]}/pis/corporate/all?config="
     url_response = Fintecture::Connect.get_pis_connect(@access_token, test_payment_attrs)
 
     expect(url_response[:url]).to include mock_url

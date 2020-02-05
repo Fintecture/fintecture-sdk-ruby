@@ -10,6 +10,7 @@ Add this line to your application's Gemfile:
 gem 'fintecture'
 ```
 
+
 And then execute:
 
     $ bundle
@@ -100,7 +101,6 @@ callback_params = {
     customer_id: 'uri_customer_id',
     provider: 'uri_provider',
     state: 'uri_state',
-    s: 'uri_s'
 }
 
 Fintecture::Connect.verify_url_parameters callback_params
