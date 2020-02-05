@@ -92,7 +92,7 @@ Explanation of each field:
 * retail: **[optional]** Possible values are **retail** and **corporate** (retail by default)
 * country: **[optional]** Loads a specific collection of providers filter by country
     
-#### Verify URL parameters
+#### Verify payment
 
 ```ruby
 callback_params = {
@@ -103,9 +103,14 @@ callback_params = {
     state: 'uri_state',
 }
 
-Fintecture::Connect.verify_url_parameters callback_params
+tokens = Fintecture::Pis.get_access_token
+
+payment_response = Fintecture::Pis.get_payments tokens['access_token'], callback_params[:session_id]
+payment_response_body = JSON.parse payment_response.body
+verified = (payment_response_body['meta']['status'] === 'payment_created')
 ```
-This function returns `true` if the parameters have verified, `false` in other case.
+
+If the payment was success, the status of the response (_payment_response_body['meta']['status']_) should be **payment_created**
 
 ## Development
 
