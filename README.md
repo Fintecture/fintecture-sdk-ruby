@@ -65,9 +65,8 @@ payment_attrs = {
     customer_full_name: 'John Doe',
     customer_email: 'john.doe@email.com',
     customer_ip: '127.0.0.1',
-    end_to_end_id: '5f78e902907e4209aa8df63659b05d24', # uuid optional
     redirect_uri: 'http://example.com/callback',
-    origin_uri: '',
+    origin_uri: 'http://example.com/checkout?session=123',
     state: 'somestate',
     psu_type: 'retail',
     country: 'fr'
@@ -85,7 +84,6 @@ Explanation of each field:
 * customer_full_name: **[mandatory]** The full name of the payer
 * customer_email: **[mandatory]** The email of the payer
 * customer_ip: **[mandatory]** The ip address of the payer
-* end_to_end_id: **[optional]** Unique id of the payment which is sent to the bank but is invisible to the customer. Max 42 character string.
 * redirect_uri: **[mandatory]** The callback URL to which the customer is redirected after authentication with his bank
 * origin_uri: **[optional]** A URL to which the customer will be redirected if he wants to exit Fintecture Connect
 * state: **[optional]** A state parameter which is sent back on callback
@@ -95,18 +93,10 @@ Explanation of each field:
 #### Verify payment
 
 ```ruby
-callback_params = {
-    session_id: 'uri_session_id',
-    status: 'uri_status',
-    customer_id: 'uri_customer_id',
-    provider: 'uri_provider',
-    state: 'uri_state',
-}
 
-tokens = Fintecture::Pis.get_access_token
-
-payment_response = Fintecture::Pis.get_payments tokens['access_token'], callback_params[:session_id]
+payment_response = Fintecture::Pis.get_payments tokens['access_token'], params[:session_id]
 payment_response_body = JSON.parse payment_response.body
+
 verified = (payment_response_body['meta']['status'] === 'payment_created')
 ```
 
