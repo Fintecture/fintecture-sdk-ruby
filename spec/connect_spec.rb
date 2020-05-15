@@ -168,6 +168,46 @@ TQIDAQAB
     expect(url_response[:url]).to include mock_url
   end
 
+  it "generate a correct URL with float 0 amount" do
+    test_payment_attrs = {
+        :amount=>42.0,
+        :currency=>"EUR",
+        :communication=>"201910-165-1",
+        :customer_id=>43,
+        :customer_full_name=>"M Foo Bar",
+        :customer_email=>"foo@bar.com",
+        :customer_ip=>"127.0.0.1",
+        :redirect_uri=> "https://awesome_payment.com/46584654asdazf4a6546fe46aef4/fintecture",
+        :origin_uri=>"https://awesome_payment.com",
+        :state=>"201910-165-1"
+    }
+
+    mock_url = "#{Fintecture::Api::BaseUrl::FINTECTURE_CONNECT_URL[Fintecture.environment.to_sym]}/pis/retail/all?config="
+    url_response = Fintecture::Connect.get_pis_connect(@access_token, test_payment_attrs)
+
+    expect(url_response[:url]).to include mock_url
+  end
+
+  it "generate a correct URL with float number amount" do
+    test_payment_attrs = {
+        :amount=>42.2,
+        :currency=>"EUR",
+        :communication=>"201910-165-1",
+        :customer_id=>43,
+        :customer_full_name=>"M Foo Bar",
+        :customer_email=>"foo@bar.com",
+        :customer_ip=>"127.0.0.1",
+        :redirect_uri=> "https://awesome_payment.com/46584654asdazf4a6546fe46aef4/fintecture",
+        :origin_uri=>"https://awesome_payment.com",
+        :state=>"201910-165-1"
+    }
+
+    mock_url = "#{Fintecture::Api::BaseUrl::FINTECTURE_CONNECT_URL[Fintecture.environment.to_sym]}/pis/retail/all?config="
+    url_response = Fintecture::Connect.get_pis_connect(@access_token, test_payment_attrs)
+
+    expect(url_response[:url]).to include mock_url
+  end
+
   it "generate a correct URL with a country" do
     test_payment_attrs = payment_attrs.clone
     test_payment_attrs.delete(:psu_type)
