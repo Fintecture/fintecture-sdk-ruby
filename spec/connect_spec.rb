@@ -172,7 +172,7 @@ TQIDAQAB
     test_payment_attrs = {
         :amount=>42.0,
         :currency=>"EUR",
-        :communication=>"ADVITAM 201910-165-1",
+        :communication=>"201910-165-1",
         :customer_id=>43,
         :customer_full_name=>"M Foo Bar",
         :customer_email=>"foo@bar.com",
@@ -192,7 +192,7 @@ TQIDAQAB
     test_payment_attrs = {
         :amount=>42.2,
         :currency=>"EUR",
-        :communication=>"ADVITAM 201910-165-1",
+        :communication=>"201910-165-1",
         :customer_id=>43,
         :customer_full_name=>"M Foo Bar",
         :customer_email=>"foo@bar.com",
