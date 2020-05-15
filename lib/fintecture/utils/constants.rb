@@ -6,7 +6,7 @@ module Fintecture
     module Constants
 
       SIGNEDHEADERPARAMETERLIST = %w[(request-target) Date Digest X-Request-ID];
-      PSU_TYPES = %w[retail corporate]
+      PSU_TYPES = %w[retail corporate all]
       SCOPES = %w[pis ais]
 
     end
