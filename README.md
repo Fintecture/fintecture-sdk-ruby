@@ -65,11 +65,21 @@ payment_attrs = {
     customer_full_name: 'John Doe',
     customer_email: 'john.doe@email.com',
     customer_ip: '127.0.0.1',
+    customer_phone: '666777888',
+    customer_address: {
+        street: 'Main St.',
+        number: '123',
+        complement: '2nd floor',
+        zip: '75000',
+        city: 'Paris',
+        country: 'fr',
+    },
     redirect_uri: 'http://example.com/callback',
     origin_uri: 'http://example.com/checkout?session=123',
     state: 'somestate',
     psu_type: 'retail',
-    country: 'fr'
+    country: 'fr',
+
 }
 tokens = Fintecture::Pis.get_access_token
 connect_response = Fintecture::Connect.get_pis_connect tokens['access_token'], payment_attrs
@@ -84,11 +94,32 @@ Explanation of each field:
 * customer_full_name: **[mandatory]** The full name of the payer
 * customer_email: **[mandatory]** The email of the payer
 * customer_ip: **[mandatory]** The ip address of the payer
+* customer_phone: **[optional]** The phone of the payer
+* customer_address: **[optional]** The address of the payer. It has the following structure:
+  * street: **[optional]** The address street name
+  * number: **[optional]** The address number
+  * complement: **[optional]** Complement information to the address
+  * zip: **[optional]** The address zip code
+  * city: **[optional]** The address city
+  * country: **[optional]** The country code (2 letters)
 * redirect_uri: **[mandatory]** The callback URL to which the customer is redirected after authentication with his bank
 * origin_uri: **[optional]** A URL to which the customer will be redirected if he wants to exit Fintecture Connect
+* execution_date: **[optional]** A future date to execute the payment. If the execution_date field is omitted, the payment is to be sent immediately.
 * state: **[optional]** A state parameter which is sent back on callback
-* retail: **[optional]** Possible values are **retail** and **corporate** (retail by default)
+* psu_type: **[optional]** Possible values are **retail**, **corporate** and **all** (retail by default)
 * country: **[optional]** Loads a specific collection of providers filter by country
+* provider: **[optional]** Limits the webview to the provided provider
+* beneficiary: **[optional]** The beneficiary of the payment. It has the following structure:
+  * name: **[optional]** The beneficiary name
+  * street: **[optional]** The beneficiary address street name
+  * number: **[optional]** The beneficiary address number
+  * complement: **[optional]** Complement information to the beneficiary address
+  * zip: **[optional]** The beneficiary address zip code
+  * city: **[optional]** The beneficiary address city
+  * country: **[optional]** The beneficiary country code (2 letters)
+  * iban: **[optional]** The beneficiary iban
+  * swift_bic: **[optional]** The beneficiary swift or bic code
+  * bank: **[optional]** The beneficiary bank name
     
 #### Verify payment
 

@@ -66,16 +66,39 @@ module Fintecture
         raise Fintecture::ValidationException.new("#{@payment_attrs['psu_type']} PSU type not allowed") unless Fintecture::Utils::Constants::PSU_TYPES.include? @payment_attrs['psu_type']
 
         raise Fintecture::ValidationException.new('end_to_end_id must be an alphanumeric string') if(@payment_attrs['end_to_end_id'] && !@payment_attrs['end_to_end_id'].match(/^[0-9a-zA-Z]*$/))
+        Fintecture::Utils::Validation.raise_if_invalid_date_format(@payment_attrs['execution_date']) if(@payment_attrs['execution_date'])
 
         %w[amount currency customer_full_name customer_email customer_ip redirect_uri].each do |param|
           raise Fintecture::ValidationException.new("#{param} is a mandatory field") if @payment_attrs[param].nil?
         end
 
         # Check if string
-        %w[communication redirect_uri].each do |param|
+        %w[communication redirect_uri provider customer_phone].each do |param|
           Fintecture::Utils::Validation.raise_if_klass_mismatch(@payment_attrs[param], String, param) if(@payment_attrs[param])
         end
 
+        # Check customer_address structure
+        Fintecture::Utils::Validation.raise_if_klass_mismatch(@payment_attrs['customer_address'], Hash) if(@payment_attrs['customer_address'])
+
+        raise Fintecture::ValidationException.new('customer_address country must be a 2 letters string') if(@payment_attrs['customer_address'] && @payment_attrs['customer_address']['country'] && !@payment_attrs['customer_address']['country'].match(/^[a-zA-Z]{2}$/))
+
+        %w[street number complement zip city country].each do |param|
+          Fintecture::Utils::Validation.raise_if_klass_mismatch(@payment_attrs['customer_address'][param], String, param) if(@payment_attrs['customer_address'] && @payment_attrs['customer_address'][param])
+        end
+
+        # Check beneficiary structure
+
+        Fintecture::Utils::Validation.raise_if_klass_mismatch(@payment_attrs['beneficiary'], Hash) if(@payment_attrs['beneficiary'])
+
+        %w[name street city iban swift_bic].each do |param|
+          raise Fintecture::ValidationException.new("beneficiary #{param} is a mandatory field") if @payment_attrs['beneficiary'] && @payment_attrs['beneficiary'][param].nil?
+        end
+
+        raise Fintecture::ValidationException.new('beneficiary country must be a 2 letters string') if(@payment_attrs['beneficiary'] && @payment_attrs['beneficiary']['country'] && !@payment_attrs['beneficiary']['country'].match(/^[a-zA-Z]{2}$/))
+
+        %w[name street number complement zip city country iban swift_bic bank_name].each do |param|
+          Fintecture::Utils::Validation.raise_if_klass_mismatch(@payment_attrs['beneficiary'][param], String, param) if(@payment_attrs['beneficiary'] && @payment_attrs['beneficiary'][param])
+        end
       end
 
       def validate_post_payment_integrity
@@ -91,13 +114,32 @@ module Fintecture
             amount: @payment_attrs['amount'],
             currency: @payment_attrs['currency'],
             communication: @payment_attrs['communication'],
-            end_to_end_id: @payment_attrs['end_to_end_id']
+            end_to_end_id: @payment_attrs['end_to_end_id'],
+            execution_date: @payment_attrs['execution_date'],
+            provider: @payment_attrs['provider']
         }
+
+        if @payment_attrs['beneficiary']
+          attributes['beneficiary'] = {
+            name: @payment_attrs['beneficiary']['name'],
+            street: @payment_attrs['beneficiary']['street'],
+            number: @payment_attrs['beneficiary']['number'],
+            complement: @payment_attrs['beneficiary']['complement'],
+            zip: @payment_attrs['beneficiary']['zip'],
+            city: @payment_attrs['beneficiary']['city'],
+            country: @payment_attrs['beneficiary']['country'],
+            iban: @payment_attrs['beneficiary']['iban'],
+            swift_bic: @payment_attrs['beneficiary']['swift_bic'],
+            bank_name: @payment_attrs['beneficiary']['bank_name']
+          }
+        end
 
         meta = {
             psu_name: @payment_attrs['customer_full_name'],
             psu_email: @payment_attrs['customer_email'],
-            psu_ip: @payment_attrs['customer_ip']
+            psu_ip: @payment_attrs['customer_ip'],
+            psu_phone: @payment_attrs['customer_phone'],
+            psu_address: @payment_attrs['customer_address']
         }
 
         data = {
@@ -110,9 +152,12 @@ module Fintecture
                meta: meta
           })
         prepare_payment_response_body = JSON.parse(prepare_payment_response.body)
+        data_attributes = {amount: @payment_attrs['amount'], currency: @payment_attrs['currency']}
+        data_attributes[:execution_date] = @payment_attrs['execution_date'] if @payment_attrs['execution_date']
+        data_attributes[:beneficiary] = { name: @payment_attrs['beneficiary']['name'] } if @payment_attrs['beneficiary'] && @payment_attrs['beneficiary']['name']
         {
             meta: {session_id: prepare_payment_response_body['meta']['session_id']},
-            data: { attributes: {amount: @payment_attrs['amount'], currency: @payment_attrs['currency']}}
+            data: { attributes: data_attributes}
         }
       end
 
@@ -127,7 +172,7 @@ module Fintecture
       def build_config(payload)
         header_time = Fintecture::Utils::Date.header_time
         x_request_id = Fintecture::Utils::Crypto.generate_uuid
-        {
+        config = {
             app_id: Fintecture.app_id,
             access_token: @access_token,
             date: header_time,
@@ -139,6 +184,8 @@ module Fintecture
             state: @payment_attrs['state'],
             payload: payload
         }
+        config[:provider] = @payment_attrs['provider'] if @payment_attrs['provider']
+        config
       end
 
       def build_local_digest(parameters)

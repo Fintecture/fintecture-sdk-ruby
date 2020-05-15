@@ -11,6 +11,15 @@ module Fintecture
           raise Fintecture::ValidationException.new("invalid #{param_name ? param_name : 'parameter'} format, the parameter should be a #{klass} instead a #{target.class.name}")
         end
 
+        def raise_if_invalid_date_format(date)
+          return unless date
+          valid_format = date.match(/\d{4}-\d{2}-\d{2}/)
+          valid_date = ::Date.strptime(date, '%Y-%m-%d') rescue false
+          return if valid_format && valid_date
+
+          raise Fintecture::ValidationException.new("invalidss #{date} date, the format should be YYYY-MM-DD")
+        end
+
       end
     end
   end

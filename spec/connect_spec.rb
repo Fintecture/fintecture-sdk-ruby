@@ -134,6 +134,8 @@ TQIDAQAB
       currency: 'EUR',
       customer_full_name: 'Test bot',
       customer_email: 'email@test.com',
+      customer_phone: '666777888',
+      customer_address: '123 Test St.',
       customer_ip: '192.168.0.1',
       end_to_end_id: '5f78e902907e4209aa8df63659b05d24',
       redirect_uri: 'http://example.com/callback',
@@ -141,7 +143,21 @@ TQIDAQAB
       state: 'bob',
       communication: '1',
       psu_type: 'retail',
-      country: 'fr'
+      country: 'fr',
+      execution_date: '2020-02-20',
+      provider: 'Test provider',
+      beneficiary: {
+        name: 'Ben Efitiary',
+        street: 'Test St.',
+        number: '123',
+        city: 'TestCity',
+        country: 'FR',
+        iban: 'test iban',
+        swift_bic: 'test swift_bic',
+        complement: 'test compliment',
+        zip: '18006',
+        bank_name: 'Test bank'
+      }
   }
 
   callback_params = {
