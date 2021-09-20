@@ -18,7 +18,7 @@ module Fintecture
 
       def get_access_token(auth_code =  nil)
         body = access_token_data auth_code
-
+        
         Fintecture::Faraday::Authentication::Connection.post url: access_token_url, req_body: body
       end
 

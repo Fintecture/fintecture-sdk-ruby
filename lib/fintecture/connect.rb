@@ -14,27 +14,78 @@ module Fintecture
 
       def get_pis_connect(access_token = nil, payment_attrs = nil)
         connect_url(access_token, payment_attrs, type: 'pis')
+        puts "test"
       end
 
+
+      # Main process for construct the request to get a connect url
       def connect_url(access_token = nil, payment_attrs = nil, type: nil)
         @access_token = access_token
         @payment_attrs = as_json payment_attrs
         @type = type
 
-        validate_payment_integrity
+        # TODO Update verification payment before the request 
+        # validate_payment_integrity
 
         @payment_attrs['end_to_end_id'] ||= Fintecture::Utils::Crypto.generate_uuid_only_chars
         @payment_attrs['amount'] = @payment_attrs['amount'].to_s
 
         payload = build_payload
-        config = build_config(payload).to_json.to_s
+        connect_response = connect access_token, payload
+        connect_response_body = JSON.parse connect_response.body
+
+        #TODO add try catch if response is not ok
+        puts '
+          Response
+        '
+        puts connect_response_body
 
         {
-            url: build_url(config),
-            session_id: payload[:meta][:session_id]
+            url: connect_response_body['meta']['url'],
+            session_id: connect_response_body['meta']['session_id']
         }
       end
 
+
+      # Api call for get a connect url
+      def connect(access_token, payload)
+        puts 'laaaaaaaaaaaaaa'
+        url = connect_endpoint
+
+        # TODO Wrong way to add params i think
+        params = "?state=#{@payment_attrs['state']}&redirect_uri=#{@payment_attrs['redirect_uri']}"
+
+        puts url + params
+        puts payload.to_json
+
+        Fintecture::Faraday::Authentication::Connection.post(
+            url: url + params, 
+            req_body: payload.to_json,
+            custom_content_type: 'application/json',
+            bearer: "Bearer #{access_token}",
+            # TODO Re-activate security
+            secure_headers: true
+        )
+      end
+
+      # Build the endpoint for connect route
+      def connect_endpoint
+        "#{api_base_url}/#{Fintecture::Api::Endpoints::Pis::CONNECT}"
+      end
+
+
+      def api_base_url
+        Fintecture::Api::BaseUrl::FINTECTURE_API_URL[Fintecture.environment.to_sym]
+      end
+
+
+
+
+
+
+
+
+      
       def verify_url_parameters(parameters = nil)
         @post_payment_attrs = as_json parameters
 
@@ -51,6 +102,8 @@ module Fintecture
       def build_url(config)
         "#{base_url}/#{@type}/#{@payment_attrs['psu_type']}/#{@payment_attrs['country']}?config=#{Base64.strict_encode64(config)}"
       end
+
+
 
       def validate_payment_integrity
         Fintecture::Utils::Validation.raise_if_klass_mismatch @payment_attrs, Hash, 'payment_attrs'
@@ -115,7 +168,7 @@ module Fintecture
             currency: @payment_attrs['currency'],
             communication: @payment_attrs['communication'],
             end_to_end_id: @payment_attrs['end_to_end_id'],
-            execution_date: @payment_attrs['execution_date'],
+            # execution_date: @payment_attrs['execution_date'],
             provider: @payment_attrs['provider']
         }
 
@@ -124,13 +177,13 @@ module Fintecture
             name: @payment_attrs['beneficiary']['name'],
             street: @payment_attrs['beneficiary']['street'],
             number: @payment_attrs['beneficiary']['number'],
-            complement: @payment_attrs['beneficiary']['complement'],
+            # complement: @payment_attrs['beneficiary']['complement'],
             zip: @payment_attrs['beneficiary']['zip'],
             city: @payment_attrs['beneficiary']['city'],
             country: @payment_attrs['beneficiary']['country'],
             iban: @payment_attrs['beneficiary']['iban'],
             swift_bic: @payment_attrs['beneficiary']['swift_bic'],
-            bank_name: @payment_attrs['beneficiary']['bank_name']
+            # bank_name: @payment_attrs['beneficiary']['bank_name']
           }
         end
 
@@ -143,21 +196,21 @@ module Fintecture
         }
 
         data = {
-            type: 'PAYMENT',
+            type: 'PIS',
             attributes: attributes,
         }
 
-        prepare_payment_response = Fintecture::Pis.prepare_payment( @access_token, {
-               data: data,
-               meta: meta
-          })
-        prepare_payment_response_body = JSON.parse(prepare_payment_response.body)
-        data_attributes = {amount: @payment_attrs['amount'], currency: @payment_attrs['currency']}
-        data_attributes[:execution_date] = @payment_attrs['execution_date'] if @payment_attrs['execution_date']
-        data_attributes[:beneficiary] = { name: @payment_attrs['beneficiary']['name'] } if @payment_attrs['beneficiary'] && @payment_attrs['beneficiary']['name']
+        # prepare_payment_response = Fintecture::Pis.prepare_payment( @access_token, {
+        #        data: data,
+        #        meta: meta
+        #   })
+        # prepare_payment_response_body = JSON.parse(prepare_payment_response.body)
+        # data_attributes = {amount: @payment_attrs['amount'], currency: @payment_attrs['currency']}
+        # data_attributes[:execution_date] = @payment_attrs['execution_date'] if @payment_attrs['execution_date']
+        # data_attributes[:beneficiary] = { name: @payment_attrs['beneficiary']['name'] } if @payment_attrs['beneficiary'] && @payment_attrs['beneficiary']['name']
         {
-            meta: {session_id: prepare_payment_response_body['meta']['session_id']},
-            data: { attributes: data_attributes}
+            meta: meta,
+            data: data
         }
       end
 

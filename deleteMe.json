@@ -1,0 +1,26 @@
+{
+    "meta": {
+        "psu_name": "John Doe",
+        "psu_email": "john.doe@email.com",
+        "psu_ip": "127.0.0.1",
+        "psu_phone": "666777888",
+        "psu_address": {
+            "street": "Main St.",
+            "number": "123",
+            "complement": "2nd floor",
+            "zip": "75000",
+            "city": "Paris",
+            "country": "fr"
+        }
+    },
+    "data": {
+        "type": "PIS",
+        "attributes": {
+            "amount": "123",
+            "currency": "EUR",
+            "communication": "Thanks Mom!",
+            "end_to_end_id": "0db3ead4c93c4b7794db1e960cb790d7",
+            "provider": null
+        }
+    }
+}

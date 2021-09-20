@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    fintecture (0.1.7)
+    fintecture (0.1.9)
       faraday
 
 GEM
@@ -28,6 +28,7 @@ GEM
 
 PLATFORMS
   ruby
+  x64-mingw32
 
 DEPENDENCIES
   bundler (~> 2.0)
@@ -37,4 +38,4 @@ DEPENDENCIES
   rspec (~> 3.0)
 
 BUNDLED WITH
-   2.0.1
+   2.2.22

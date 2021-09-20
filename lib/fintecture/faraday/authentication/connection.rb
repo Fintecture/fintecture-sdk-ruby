@@ -24,6 +24,7 @@ module Fintecture
               req.headers = req_headers(custom_content_type, bearer, secure_headers, method: 'post', body: req_body, url: url)
               req.body = req_body
             end
+            
           end
 
           def get(url:, req_body: nil, custom_content_type: nil, bearer: nil, secure_headers: false)
@@ -52,13 +53,36 @@ module Fintecture
             path_name = URI(url).path
             search_params = URI(url).query
 
-            headers = {
-                'Date' => Fintecture::Utils::Date.header_time.to_s,
-                'X-Request-ID' => Fintecture::Utils::Crypto.generate_uuid
-            }.merge(payload ? load_digest(payload) : {})
 
             request_target = search_params ? "#{method.downcase} #{path_name}?#{search_params}" : "#{method.downcase} #{path_name}"
+            date = Fintecture::Utils::Date.header_time.to_s
+            digest = load_digest(payload)
+            x_request_id = Fintecture::Utils::Crypto.generate_uuid
 
+
+            headers = {
+                'Date' => date,
+                'X-Request-ID' => x_request_id
+            }.merge(payload ? digest : {})
+
+            puts "
+            body: #{payload}
+            " 
+            puts "
+            (request-target): #{request_target}
+            " 
+            puts "
+            date: #{date}
+            "
+            puts "
+            digest: #{digest["Digest"]}
+            "
+            puts "
+            x-request-id: #{x_request_id}
+            "
+
+
+        
             headers['Signature'] = Fintecture::Utils::Crypto.create_signature_header({'(request-target)' => request_target}.merge(headers))
             headers
           end

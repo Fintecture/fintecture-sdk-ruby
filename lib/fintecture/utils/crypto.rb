@@ -23,10 +23,19 @@ module Fintecture
           payload = payload.to_json.to_s if payload.is_a? Hash
 
           digest = OpenSSL::Digest::SHA256.new
+
           private_key = OpenSSL::PKey::RSA.new(Fintecture.private_key)
 
+          
+          puts "
+          private_key: #{private_key}
+          "
           begin
             signature = private_key.sign(digest, payload)
+            puts "
+            signature: #{Base64.strict_encode64(signature)}
+            "
+
             Base64.strict_encode64(signature)
           rescue
             raise Fintecture::CryptoException.new('error during signature')
@@ -56,6 +65,8 @@ module Fintecture
           signing = []
           header = []
 
+
+
           Fintecture::Utils::Constants::SIGNEDHEADERPARAMETERLIST.each do |param|
             next unless headers[param]
 
@@ -63,11 +74,17 @@ module Fintecture
             signing << "#{param_low}: #{headers[param]}"
             header << param_low
           end
+          
 
           # Double quote in join needed. If not we will get two slashes \\n
           signature = sign_payload signing.join("\n")
 
+          puts "
+          signingString: #{signing.join("\n").to_json}
+          "
+
           'keyId="' + Fintecture.app_id + '",algorithm="rsa-sha256",headers="' + header.join(' ') + '",signature="' + signature + '"'
+           
         end
 
       end

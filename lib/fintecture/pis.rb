@@ -34,7 +34,6 @@ module Fintecture
 
       def get_access_token
         response = Fintecture::Authentication.get_access_token
-
         JSON.parse response.body
       end
 
