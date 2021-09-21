@@ -1,0 +1,6 @@
+Main test file : .\deleteMe.rb (use the SDK)
+Command : bundle exec rake install && ruby .\deleteMe.rb
+
+Algo test file : .\test.rb (Don't use the SDK)
+Command : ruby .\test.rb
+

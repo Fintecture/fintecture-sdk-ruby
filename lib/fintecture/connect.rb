@@ -6,7 +6,7 @@ require 'fintecture/utils/validation'
 require 'fintecture/exceptions'
 require 'fintecture/utils/date'
 require 'fintecture/utils/constants'
-
+require 'cgi'
 module Fintecture
   class Connect
     class << self
@@ -14,7 +14,6 @@ module Fintecture
 
       def get_pis_connect(access_token = nil, payment_attrs = nil)
         connect_url(access_token, payment_attrs, type: 'pis')
-        puts "test"
       end
 
 
@@ -35,10 +34,10 @@ module Fintecture
         connect_response_body = JSON.parse connect_response.body
 
         #TODO add try catch if response is not ok
-        puts '
-          Response
-        '
-        puts connect_response_body
+        # puts '
+        #   Response
+        # '
+        # puts connect_response_body
 
         {
             url: connect_response_body['meta']['url'],
@@ -49,17 +48,29 @@ module Fintecture
 
       # Api call for get a connect url
       def connect(access_token, payload)
-        puts 'laaaaaaaaaaaaaa'
+
         url = connect_endpoint
+        # params["state"] = @payment_attrs['state']
+        # params["redirect_uri"] = @payment_attrs['redirect_uri']
+
+      
 
         # TODO Wrong way to add params i think
-        params = "?state=#{@payment_attrs['state']}&redirect_uri=#{@payment_attrs['redirect_uri']}"
+        # params = URI.encode_www_form params
+        params = CGI.unescape "?state='#{@payment_attrs['state']}'&redirect_uri='#{@payment_attrs['redirect_uri']}'".to_s
 
-        puts url + params
-        puts payload.to_json
 
+        query_string = "?#{{
+          state:  @payment_attrs['state'],
+          # redirect_uri: @payment_attrs['redirect_uri']
+          
+        }.map{|key, value| "#{key}=#{value}"}.join('&')}"
+
+        puts "
+        URI: #{ url + query_string}
+        "
         Fintecture::Faraday::Authentication::Connection.post(
-            url: url + params, 
+            url: url + query_string, 
             req_body: payload.to_json,
             custom_content_type: 'application/json',
             bearer: "Bearer #{access_token}",
@@ -169,7 +180,7 @@ module Fintecture
             communication: @payment_attrs['communication'],
             end_to_end_id: @payment_attrs['end_to_end_id'],
             # execution_date: @payment_attrs['execution_date'],
-            provider: @payment_attrs['provider']
+            # provider: @payment_attrs['provider']
         }
 
         if @payment_attrs['beneficiary']

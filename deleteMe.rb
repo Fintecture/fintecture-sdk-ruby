@@ -4,64 +4,64 @@ require './lib/fintecture'
 # Fintecture.app_id = '8603fb08-d2ef-4e73-ba2f-5e4cd80efb65'
 # Fintecture.app_secret = '6c892fbb-15c1-42ec-9296-bbbdf89ffd5d'
 # Fintecture.private_key = %q(-----BEGIN PRIVATE KEY-----
-# MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC5GnIf2z104zO/
-# +i0n3cBuRHpkUHM36xI9Uf1JV/UTEYzzAo1u/+XXxsnLDcaSjm+zca+zJFjK4yae
-# TgL7esn+Cdngy311huDBzkIf0wRCNmtyj8FyYkbNhFLPot3YFZGhy4em+AtwvQQU
-# 0eo9BLhJJd33apJhHJfj27dOjSxcIrMtno6YyihskbX0DB1xLVZdoL22NbZmnZqH
-# C5ZXV5qOFWhNOiT1YKh2Yd88XQnYAFwmWWS95SuEY65n+QR2a6wh7RwjHvgDOErf
-# ms96Hp0cjhWFuZJ39WDMHvGyjJ+buRKLMlSWyx/Ft84QiT59mIKipzR59eAJ351X
-# B91hOwCvAgMBAAECggEAGjMADDo/zJeL75Q9Z/MfFXxjxmcMp9GB12QPcZ4ddgF5
-# 7btiwV8+7PeaAD+G5595d/CTacuvNahJAwcPrQCILoi+ae7jZwscLNJA0bhQVf7V
-# 3nUycDoww04DWpg2xirnXfsszBk3pVFbjobXnKNaYiAV9rsC1PPzG7ExlNCugqu4
-# PSoKVU7HTM+8YDPEpHeT9z3uIV7zFzgNq1+/dIg0GBZZM4U9Qe+OztroRnfb1BT6
-# WIqAxCExfBa2GHSAlJFS0+NmVwcoKWRCsmUH6ISj4SiiJvVJfIca0/GqycBqKzvQ
-# TOQh3c+IrXyG2ssiK9Nb6lqBGviHhB3p6C6tF4wPQQKBgQD/pG3JiC7cAOq5Afae
-# MFZ9STfIRfd/pocrZByEduoc9pkAprhv4KU1M+ARJ+M1Svg74lAv9ULd1aoSONf3
-# +NQbdbNJBFXSoS/YylKDJNYM0Yrfu+ku+1/m6kPNIg82EtMYB+Li1eAYAa4x/gJw
-# RsNEiZHWpF0Zgy+hSn+vtrocSQKBgQC5XL/2baMCW8hLNy+GwONrtqJvcPxoQbZC
-# AHPLN8Hsau4vE/LWjXqhHc82ze5zoMUNA/wk0Ic2dvixu87HInc8oXTSuNorN/Y6
-# e4Nnqu7Nu2C7Q5eieHupfNVTt8/EZb0lb6YGus7PxMbsWK5o5xZhmNnhRWERr35A
-# i3eVmCWFNwKBgQCxM9U2QUPaFHifzZCZjoAlUD9uf7FTtqczmK171MHrWbQtE2P9
-# iQZ7nn3O5otEQbdYK0PSOnwjMRw2jViG9uBwOGISVwL2geycpYIUjdAiCo3tEGBO
-# xMhxVCmzY8yPevUAT1ciTYaMnX2WAbDHCwYH2CRTWJOAP8MgVnez4UGYoQKBgAbj
-# FlLOogbdaCS7SS3Fju2anJBtb0NkZaQwJh0/1hm1o2HmaNhl609/LwrHPfvX1lp0
-# cnLfuJZidz0LUFR/yFRdX1zQ93IxoxlrK2e3pyXHt4Fdso2b0mRqufZhVvviF9QD
-# QPTxDewUUJvJc7l8FI3NwxKmpEOm9JbrV6ccPxCjAoGAJ8uwnsH27gzzFxsf1Frc
-# OYFOw3vyqw1pd6I4uIq7vWtqT4GAmwL2lzEanTMsuFY/rRkSRrTR8hLZPmFZM5zs
-# qZfkZDAuZEuZEj4gE1YExhRYshyWWXN8NdkW1DITGSksUttGK+eM4ZsfMbnt8ibV
-# RySRy3s2FItWMAOF1KvDZkA=
+# MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCmfvSia9VTtjMt
+# iFHAP4cE2VYHKGoG+NRz5ciYbsI41jh3eSVwA6aFmOZBb0gXMEvCQZZeNWe4/2LO
+# tt3BJLQw9jcLnFQ0P8lhJv4octf+CSLFM34WTkSImsDiKpUgbbo7BUaqYzRShUAc
+# SjXlP5zUL7z0a99pPnXAFQzV66vyeVa0IoP2cSbFYAfAY9mp/5lbJQvOsXLA/ay9
+# mTNk1u21OFLYfzuta+WJRhFJc05Prb21hd2+Yk+A7S1MkMbFCw5r8rXN9E9iVFcn
+# BBPveDGDfSC29n4ZMD/xPjfALXzkfBhukeJwHEIVFhBr3CkVUtSZOpA+Wl4zCGJx
+# QknJKOM7AgMBAAECggEAOUSFxLAuikKrS8gNxoCTYnmW+5NNFOTVvp+U5cmDCKW2
+# enGzDNpUlrNGz88FDuTPyhthKzpXWOyPAecoU1zaldS6jkXROL+P9tjApw0JehmO
+# WiIiBm4ZaJtCKQjYjnTvj4l7CvRgdNnceV6VNyswOFPLPI82Iy8WtWEILzSGyjmg
+# Fsrw7WpCKSgzfenoI0Lnz6osQnRf5vHpWqm/NSX4qPuhDsODLI60Z9v2FehTvR8J
+# JgHtXm6Eb3jfQh2VunLWFCv0zG9qT1jOATfRZXiEUozwBaX925d8yADqPMjl56vc
+# 1tyb6L+EDxPBubUzqkwc5t9HuWtlwQfJRAaAfcRNgQKBgQDWZHNBZu7lMlf7VlCt
+# ccKu6hcGl0WxWAqaD6dnTIfu4x96zHjypDBHvtKTgTcOun048Lwwx+10DDUbOcPw
+# uFOU7uEoitfL8l3S41ah5dCVulfHMSRqZBUmnKQIgh2gQYAW4MpzzK3yOfC3QdKn
+# UQjJ7C2thPgwr5FVn85RXjPD2wKBgQDGzuOplVr3mq6Bf9dHDalhs7ICnrxiFy8r
+# KGDvJ2ZBfuU9OsjS/rfS3XU32Y+QcqgfgGiykZyBK9ciR4fQB8JB4BMnRo+0wv1W
+# hRIaax4sbwdLLx/UaR109g0E/9Z1N5lnByoW4c7Jy9bdf0Ti3wZvCMOVYL54gez/
+# Ar5CXmksIQKBgDtnY+QYUFNjaqtylDIq1kW/CRhDbAUinvVnJvxhYTzY480TwOOC
+# iPooLpK+d/H1zGKtmYduriW8iC5+CAO4HziiI/Mm3XpeMo8PfN6pHe2Oz2ma/TsZ
+# dh7Xwj+1Rd40p/gu2wnRCdWXJlKww1ynAGdqsJFmyZo722o9OF6lWnSHAoGAH7D1
+# K6BKWvQGY1BMsd/ko1Vwx+gj4YMOmtOZ+CWQsFoZEtSfFLtT9EInIFsG/qC4WiUv
+# C2AY0aJ6bdV3OdsyxSuCAh3GZKs8lSErTJjMu4qLYBnH+iUzc+SRGL3ros3VH05O
+# EE24mARtYOubwIqKzQJZoyND2ZPkgpYeXBgOreECgYEAg0+lcBaN02yalOLalCDz
+# yBda7xpfvnEYv1VUK/Hb4g9hD8KBciTr1OZo82Mjv7uC0ToBq9vDFmVXV4AbIIl7
+# z/ZLU1tK4wJqXqKBEz+mzapJZpo9tzxrg7pg8VJG/a58fplraTchL6N6PFL/DEY9
+# 02CGyNOpy9nTApObcTv1sPw=
 # -----END PRIVATE KEY-----)
-
+# 
 Fintecture.environment = 'local'
-Fintecture.app_id = 'cab8f065-55f2-4660-98e4-07835380f762'
-Fintecture.app_secret = '902426e1-12e7-437e-9779-e63ee6da5c09'
+Fintecture.app_id = '4654b076-7ed5-43d2-9fb9-40d48b05bf92'
+Fintecture.app_secret = '2ab2eba3-7106-45a9-a0cc-3eda0d45ffc1'
 Fintecture.private_key = %q(-----BEGIN PRIVATE KEY-----
-MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDnDfg9CWRv0h5s
-6pJTM7Bsd5XzztAv1dp8QQPG+hQl+s+WtpHm/6kMqag8RJPFQx+hPE1MsGYzrEsx
-zejjyNBKPG9em1qQzJiQmuc22Pbq0koYCKterRgQGp9zbiYFJEpILrZ1opMBFV6M
-sbKFkYl0m4inSnewYG4ISEop9nkcyb1wYVKK8joTrN04xKqWlElV+gyoFoPhi2r8
-V+l+ubzGJiOdXQJA1sBA/umoxbZCgX3JhtTOpz2FQETvYiSomGEMQdpo3vjlL/EV
-8R1fSN8HzYv3xyDlbdvJPmMnvYNMNlpMSAt6Ft4duF0xp5JYMA9hrfny1u8wQ8BY
-DMl1pVsRAgMBAAECggEAUSpZH6fi/l0DjyM/z7aCrTe9F255N7SaEbgNCaLj3Quk
-TL9JtantyqL2lGVKu6r+u3cheGUnIdPOfmpk+0+Zy9o7DTLpt6AHoBSqUFwbMRY6
-LQMuoA2SPGX9yWDSPlAnQAAY3G4F0gWdtzLdEYq0jJ/ue0XvkafuPz6VvvP0S6Xv
-5FmItpPjTGz3r+Vh0AbqxWLppLdACMJSF3x+jz0JRuvRBPMw3VDKxel7X0mydnYC
-LxsmuBHIb3Pf06iMw3NtvFzI1on6wO53YCAcdr3rXxYsweFgXgBkfxwC2oGtrO2m
-obs8nuLfiZcR5hrLDhlNlofjYiQxmxfUkk0T7H/JWQKBgQD0nBt1tuzf0ft1ozAS
-5MtJQd7ShoC7qOwwJ7wYHkqUaOJP+AtX3hFR+G0Es0WfUcyCojxQ8qMYR2U1zo+n
-pllRrj872juLhEvwJ1r2wYdOnk9+bvhMuinavJ02gl6pgU33acD9ODJCBy1UwoTY
-3VeyXEMFtovCeJePKSNY8qAtIwKBgQDx0EayJjCFYC42RP6W95ZOsTAqUq4gSjWm
-I4Ibv7aQM5NmkwNzcsmcYNpKzsqjtxQ0L4bxJ0qpYCVNiafOS2Pl2SUk5FGG1Sr9
-MGvjmU3ORX3VC5NEtVITg4ROzNyz3gqSy7vCdqalPuEEVDfRJ7WmnSRjhaqyUZOw
-FLev4Ip8OwKBgQCZT86WNRS6I+4riSB0dxpCzBpQcST2eaWvePgXVcUAx8wwuxLA
-+9p3OfF6ZLJabPZ1WiHbyngWm4j/9HttZIHPBBt19A4mH8FIwCHvTtTznZ3NbNgL
-nxLkmhsfMw8JxpWLYKkpDLPTVpQ+77w8AF8a12Daj9OBC/xSKkKRWWCzaQKBgQDV
-Tod+UOfOT6iUIMp/u4lwgybcvrBxNWUb2AjGl5fgnk5xVk/eACzOcDU/dikUv8Pn
-wOEFS0a2IGTnf/1xodlOgP0eDPXJvbK9Q4B4ddxHj89PJnXTTytGoWYN6PLrC3xC
-P8ux395iuBPgMLZIHwJDJi1aSSfpQsLHuY7La4RdzwKBgQCepT0DEmtCEPsfsTEv
-6nrmrHkyCpzJk+1qPqIf1yafdGYOnQsK8nqQILMCdY5XKQaj+95ffuyddL9EGhD7
-LI08GQvC8jiir0zZtk0ooA74VNIPWLldLIqH5iuRr+YjENkczDOkRJntjXhpjyVR
-8KOst79FhQYYu+m6ip0y1y/Xog==
+MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCRzz6FzaNDUraa
+qh2vD7gqcGNskZOpEDTHiWqj7fXeirPDKbOPdwuRKjf+Dc2VFrzLs7sCGjv233ay
+xIMWGWVCXg2HvRfkF1qh+zlz09c7nY2C1TJ+jw5AkR90opCtcvVAt8N14GtwQPXX
+vCDw925/qIVU1JQHJsCS6XB10KWpdb+UzZxuZwruTw66+gx9njAyg9o/9mOIRJGQ
+fc2YTvlsfw+NiVQiwvjBrklXtN6cIiZIyH6PxhQg73zcceWlTqfokcxWl+wyZjIJ
+ReApYUPKihDAVDD+PKsv2j5J6/Bt0BQIfGCVVhqYqpcP5Xe+VMDyD5H2j3OYjjI5
+noiAdNvBAgMBAAECggEACpeUXPz6F2RqqSP4LGTxxdIh7tueb0F4TBHSojOhpk0g
+z5R3xlFpZjNmcOQIzgP3qrvqNwtigBsYpiuPXZYdBywKQz+R0jsowCvzWajccai5
+hHUUtMvonE55NgGvN+JqKDg75elryfJLdE9m0d/E8ldyzshIiUJ1P9bfGWKS/j3Y
+SQEqzmPfr8xPsmScxuwEH7qgobI1D0xCIU4dzMKj3sYxEN2XcSUyzQ7kMtvgVenQ
+gJ+o9xMc3pcmTB/v+u26l5PvMuUEq4SkepfOt8xXSCCYBEQYNdJgmD+AV0hhmqyJ
+NQbxl/OsYXdzkiPL+SEBt9z3i/iQ5XdoosbK3DeSaQKBgQDELuhbYPzgFeHSSlT5
+jMztP3C+H9rebC0S0o1owiQIdgOvt4Q/gB+TCvxnhSum7Bta5PrII5UW+35X/Q/G
+D61YchMpF5XmSsBT9mR1mxtQa+VfO3xeR6aOrS/nRhJodRsMZTaGx5oAuA/mw+zT
+7L+A6IpKF5JahXlEygnt5GfUXQKBgQC+RGp+XhAs9c3mkqp6V7QbCZUqSTKzLJnD
+Cb6Tzd9El42MiRTYnzLBsehiXnuaTIyOnysOYZN+Tgw/KU6rj3racDOw/nzVxuJH
+1K/JKX4A939JhbKK2e/TXVnyIdxMKj3b/Ud7/rBaF3X4IaIByheDJtoxFX+gvWNy
+edrU+D8utQKBgEuNYRCn9lr6MmCBHd6JOfZ4QxwFOo4EDQu9qJXahnP3tw252CV4
+WzCOv4vCfoAnV5WWr3naMjWKnyqVm7iEGxb/v59IpQLucMklD6U3GbrMAqa9SvUo
+FN3HlrYzhy1RRBxu8iPPxOBYAk+1zoQDHfEwHOnR0BwqYPx77nz+RHpFAoGBALMY
+gUmLzxwTEApeuhvJHF5q6b7RAelILUA6lupX2jadlX7Ytgel6sgKZ9zYZO576b6C
+MqwpywUUAFEf186Dkze0b+PF2Mn9mJfWqtTmupW8YlNZhxNOS4Igl/7kQpJrHKlL
+wxMDTQqwlLnJJs8aZIFue+nB+83ZF5f0/biEKC0VAoGAF5LVX7kBeYE8uYpgM3Of
+4mDWpf6iBsZsWWLdz1KkTUQQe+1D75hCe9rnl9rHvw8MWQyjtxjCyI7W9ueF0f1l
+0l9/4zNxstLm1eFNaMZIChYpNx7lIcBLwjuJkW+vIe1iQAOStGDbXOT+CmPk369b
+zS/9VwFGcJrUsVzzD40dhic=
 -----END PRIVATE KEY-----)
 
 
@@ -111,21 +111,21 @@ payment_attrs = {
 # puts @tokens
 
 @connect_response = Fintecture::Connect.get_pis_connect @tokens['access_token'], payment_attrs
-# url = @connect_response[:url]
-# puts url
+url = @connect_response[:url]
+puts url
 
 
 
 
-# while true
+while true
 
-#     payment_response = Fintecture::Pis.get_payments @tokens['access_token'], @connect_response[:session_id]
+    payment_response = Fintecture::Pis.get_payments @tokens['access_token'], @connect_response[:session_id]
 
-#     payment_response_body = JSON.parse payment_response.body
-#     # puts payment_response_body.to_json
+    payment_response_body = JSON.parse payment_response.body
+    # puts payment_response_body.to_json
 
-#     verified = (payment_response_body['meta']['status'] === 'payment_created')
-#     puts verified
+    verified = (payment_response_body['meta']['status'] === 'payment_created')
+    puts verified
 
-#     sleep 5
-# end
+    sleep 5
+end

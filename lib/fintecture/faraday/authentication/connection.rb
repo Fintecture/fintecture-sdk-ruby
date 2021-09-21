@@ -65,25 +65,29 @@ module Fintecture
                 'X-Request-ID' => x_request_id
             }.merge(payload ? digest : {})
 
-            puts "
-            body: #{payload}
-            " 
-            puts "
-            (request-target): #{request_target}
-            " 
-            puts "
-            date: #{date}
-            "
-            puts "
-            digest: #{digest["Digest"]}
-            "
-            puts "
-            x-request-id: #{x_request_id}
-            "
+
+            # puts "
+            # body: #{payload}
+            # " 
+            # puts "
+            # (request-target): #{request_target}
+            # " 
+            # puts "
+            # date: #{date}
+            # "
+            # puts "
+            # digest: #{digest["Digest"]}
+            # "
+            # puts "
+            # x-request-id: #{x_request_id}
+            # "
 
 
         
             headers['Signature'] = Fintecture::Utils::Crypto.create_signature_header({'(request-target)' => request_target}.merge(headers))
+            # puts "
+            # headers :  #{headers}
+            # "
             headers
           end
 
