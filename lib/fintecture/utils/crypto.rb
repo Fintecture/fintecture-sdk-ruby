@@ -27,22 +27,8 @@ module Fintecture
           private_key = OpenSSL::PKey::RSA.new(Fintecture.private_key)
 
           
-          # puts "
-          # private_key: #{private_key}
-          # "
           begin
             signature = private_key.sign(digest, payload)
-            # puts "
-            # signature: #{signature}
-            # "
-            # puts "
-            # signature Base64 1x: #{Base64.strict_encode64(signature)}
-            # "
-            # puts "
-            # signature Base64 2x: #{Base64.strict_encode64(Base64.strict_encode64(signature))}
-            # "
-
-
             Base64.strict_encode64(signature)
           rescue
             raise Fintecture::CryptoException.new('error during signature')
@@ -85,11 +71,6 @@ module Fintecture
 
           # Double quote in join needed. If not we will get two slashes \\n
           signature = sign_payload signing.join("\n")
-
-          # puts "
-          # signingString: #{signing.join("\n").to_json}
-          # "
-
           'keyId="' + Fintecture.app_id + '",algorithm="rsa-sha256",headers="' + header.join(' ') + '",signature="' + signature + '"'
            
         end
