@@ -180,51 +180,29 @@ module Fintecture
             communication: payment_attrs['communication']
         }
     
-        # Optionals attributes
-
-        # Mandatory attributes => beneficiary
-        if payment_attrs['beneficiary']
-          attributes['beneficiary'] = {
-            name: payment_attrs['beneficiary']['name'],
-            street: payment_attrs['beneficiary']['street'],
-            zip: payment_attrs['beneficiary']['zip'],
-            city: payment_attrs['beneficiary']['city'],
-            country: payment_attrs['beneficiary']['country'],
-            iban: payment_attrs['beneficiary']['iban'],
-            swift_bic: payment_attrs['beneficiary']['swift_bic']
-          }
-
-          # Optionals attributes => beneficiary
-          attributes['beneficiary']['number'] = payment_attrs['beneficiary']['number'] if payment_attrs['beneficiary']['number']
-          attributes['beneficiary']['complement'] = payment_attrs['beneficiary']['complement'] if payment_attrs['beneficiary']['complement']
-          attributes['beneficiary']['form'] = payment_attrs['beneficiary']['form'] if payment_attrs['beneficiary']['form']
-          attributes['beneficiary']['incorporation'] = payment_attrs['beneficiary']['incorporation'] if payment_attrs['beneficiary']['incorporation']
-        end
-
         # Mandatory meta data
         meta = {
             psu_name: payment_attrs['customer_full_name'],
             psu_email: payment_attrs['customer_email'],
-            psu_phone: payment_attrs['customer_phone']
+            psu_phone: payment_attrs['customer_phone'],
+            psu_phone_prefix: payment_attrs['customer_phone_prefix'] 
         }
 
+        # Optionals meta psu_address
+        if payment_attrs['customer_address']
+          meta['psu_address'] = {}
+          meta['psu_address']['street'] = payment_attrs['customer_address']['street'] if payment_attrs['customer_address']['street']
+          meta['psu_address']['number'] = payment_attrs['customer_address']['number'] if payment_attrs['customer_address']['number']
+          meta['psu_address']['city'] = payment_attrs['customer_address']['city'] if payment_attrs['customer_address']['city']
+          meta['psu_address']['zip'] = payment_attrs['customer_address']['zip'] if payment_attrs['customer_address']['zip']
+          meta['psu_address']['country'] = payment_attrs['customer_address']['country'] if payment_attrs['customer_address']['country']
+        end
+
         # Optionals meta data
-        meta['psu_phone_prefix'] = payment_attrs['customer_phone_prefix'] if payment_attrs['customer_phone_prefix']
         meta['expirary'] = payment_attrs['expirary'] if payment_attrs['expirary']
         meta['cc'] = payment_attrs['cc'] if payment_attrs['cc']
         meta['bcc'] = payment_attrs['bcc'] if payment_attrs['bcc']
 
-        # Mandatory meta => psu_address
-        meta['psu_address'] = {
-          street:  payment_attrs['customer_address']['street'], 
-          city:  payment_attrs['customer_address']['city'],
-          zip: payment_attrs['customer_address']['zip'],
-          country: payment_attrs['customer_address']['country'] 
-        }
-
-        # Optionals meta => psu_address
-        meta['psu_address']['number'] = payment_attrs['customer_address']['number'] if payment_attrs['customer_address']['number']
-        meta['psu_address']['complement'] = payment_attrs['customer_address']['complement'] if payment_attrs['customer_address']['complement']
 
         # Return the payload
         {
@@ -235,6 +213,8 @@ module Fintecture
           }
         }
       end
+
+
 
 
       # ------------ API ENDPOINTS ------------

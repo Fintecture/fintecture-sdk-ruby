@@ -90,7 +90,6 @@ payment_attrs_connect = {
   #     form: "", # Mandatory if no fixed beneficiary
   #     incorporation: "" # Mandatory if no fixed beneficiary
   # },
-
   debited_account_id: 'FR1420041010050500013M02606', # Optional
   debited_account_type: 'iban', # Mandatory if debited_account_id exist
   # end_to_end_id: '5f78e902907e4209aa8df63659b05d24',
@@ -99,11 +98,9 @@ payment_attrs_connect = {
   customer_email: 'john.doe@email.com', # Mandatory
   customer_phone: '666777888', # Mandatory
   customer_phone_prefix: '', # Optionnal
-
   customer_ip: '127.0.0.1', # Optionnal (Plante la signature)
   customer_form: '', # Mandatory if no fixed beneficiary
   customer_incorporation: '', # Mandatory if no fixed beneficiary
-
   customer_address: { 
       street: 'Main St.', # Mandatory 
       number: '123', # Optional 
@@ -116,34 +113,19 @@ payment_attrs_connect = {
   origin_uri: 'http://example.com/checkout?session=123', # Optional 
   state: 'somestate' # Mandatory 
 }
+
 payment_attrs_request_to_pay = {
     x_language: 'fr', # Mandatory
     amount: 123, # Mandatory
     currency: 'EUR', # Mandatory
     communication: 'Thanks Mom!', # Mandatory
-    # beneficiary: {      # Optional
-    #     name: "Bob Smith", # Conditional
-    #     iban: "FR1420041010050500013M02606", # Conditional
-    #     swift_bic: "BANKFRXXXXX", # Conditional
-    #     street: "road of somewhere", # Conditional
-    #     number: "2", # Optional
-    #     complement:"", # Optional
-    #     city: "Paris", # Conditional
-    #     zip: "93160", # Conditional
-    #     country: "FR", # Conditional
-    #     form: "", # Mandatory if no fixed beneficiary
-    #     incorporation: "" # Mandatory if no fixed beneficiary
-    # },
-
     customer_full_name: 'John Doe', # Mandatory
     customer_email: 'john.doe@email.com', # Mandatory
     customer_phone: '666777888', # Mandatory
     customer_phone_prefix: '+33', # Optionnal
-
     customer_address: { 
         street: 'Main St.', # Mandatory 
         number: '123', # Optional 
-        complement: '2nd floor', # Optional 
         city: 'Paris', # Mandatory 
         zip: '75000', # Mandatory 
         country: 'fr' # Mandatory 
@@ -187,6 +169,7 @@ payment_attrs_request_to_pay = {
     expect(session_id).not_to be_empty
   end
 
+
   it '/request-to-pay' do
     access_token_response = Fintecture::Pis.get_access_token
     access_token = access_token_response['access_token']
@@ -204,6 +187,7 @@ payment_attrs_request_to_pay = {
     expect(code).to eq("request_to_pay_initiated")
     expect(session_id).not_to be_empty
   end
+  
   
   it '/payments/[session_id] - Connect paiement' do
     access_token_response = Fintecture::Pis.get_access_token
