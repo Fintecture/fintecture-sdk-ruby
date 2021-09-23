@@ -6,7 +6,12 @@ module Fintecture
 
       def error(res)
         body = JSON.parse res.body
-        raise Exception.new(_construct_message(res.status, body['code'], body['log_id'], body["errors"]))
+        
+        code = body['code']
+        log_id = body['log_id']
+        errors = body['errors']
+
+        raise Exception.new(_construct_message(res.status, code, log_id, errors))
       end
 
 

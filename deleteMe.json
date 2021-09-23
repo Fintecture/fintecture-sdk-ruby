@@ -2,25 +2,26 @@
     "meta": {
         "psu_name": "John Doe",
         "psu_email": "john.doe@email.com",
-        "psu_ip": "127.0.0.1",
         "psu_phone": "666777888",
+        // "psu_phone_prefix": "",
+        "expirary": 86400,
+        "cc": "sylvain.sanfilippo@fintecture.com",
+        "bcc": "sylvain.sanfilippo@fintecture.com",
         "psu_address": {
             "street": "Main St.",
-            "number": "123",
-            "complement": "2nd floor",
-            "zip": "75000",
             "city": "Paris",
-            "country": "fr"
+            "zip": "75000",
+            "country": "fr",
+            "number": "123",
+            "complement": "2nd floor"
         }
     },
     "data": {
-        "type": "PIS",
+        "type": "REQUEST_TO_PAY",
         "attributes": {
-            "amount": "123",
+            "amount": 123,
             "currency": "EUR",
-            "communication": "Thanks Mom!",
-            "end_to_end_id": "83a13000095f472a813e9d1ca37f40e3",
-            "provider": null
+            "communication": "Thanks Mom!"
         }
     }
 }

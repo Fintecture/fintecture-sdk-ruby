@@ -5,7 +5,7 @@ module Fintecture
         PIS = 'pis/v2'
         PISPROVIDER = "#{PIS}/provider"
         PISCUSTOMER = "#{PIS}/customer"
-        PREPARE = "#{PIS}/prepare"
+        REQUEST_TO_PAY = "#{PIS}/request-to-pay"
         PAYMENTS = "#{PIS}/payments"
         CONNECT = "#{PIS}/connect"
       end

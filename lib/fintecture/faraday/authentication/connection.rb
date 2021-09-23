@@ -17,31 +17,32 @@ module Fintecture
             end
           end
 
-          def post(url:, req_body: nil, custom_content_type: nil, bearer: nil, secure_headers: false)
+          def post(url:, req_body: nil, custom_content_type: nil, bearer: nil, secure_headers: false, additional_headers: nil)
             conn = connection(url)
 
             res = conn.post do |req|
               req.options.params_encoder = Faraday::DisabledEncoder
-              req.headers = req_headers(custom_content_type, bearer, secure_headers, method: 'post', body: req_body, url: url)
+              req.headers = req_headers(custom_content_type, bearer, secure_headers, additional_headers, method: 'post', body: req_body, url: url)
               req.body = req_body
             end
 
             !res.success? ? Fintecture::ApiException.error(res) : res
           end
 
-          def get(url:, req_body: nil, custom_content_type: nil, bearer: nil, secure_headers: false)
+          def get(url:, req_body: nil, custom_content_type: nil, bearer: nil, secure_headers: false, additional_headers: nil)
             conn = connection(url)
 
             res = conn.get do |req|
               req.options.params_encoder = Faraday::DisabledEncoder
-              req.headers = req_headers(custom_content_type, bearer, secure_headers, method: 'get', url: url)
+              req.headers = req_headers(custom_content_type, bearer, secure_headers, additional_headers, method: 'get', url: url)
               req.body = req_body
             end
 
             !res.success? ? Fintecture::ApiException.error(res) : res
           end
 
-          def req_headers(custom_content_type, bearer, secure_headers, method: '', body: {}, url:)
+          def req_headers(custom_content_type, bearer, secure_headers, additional_headers, method: '', body: {}, url:)
+
             client_token = Base64.strict_encode64("#{Fintecture.app_id}:#{Fintecture.app_secret}")
 
             {
@@ -49,11 +50,13 @@ module Fintecture
                 'User-Agent' => "Fintecture Ruby SDK v #{Fintecture::VERSION}",
                 'Authorization' => bearer ? bearer : "Basic #{client_token}",
                 'Content-Type' => custom_content_type ? custom_content_type : 'application/x-www-form-urlencoded',
-            }.merge(secure_headers ? req_secure_headers(body: body, url: url, method: method) : {})
+            }.merge(secure_headers ? req_secure_headers(additional_headers, body: body, url: url, method: method) : {})
 
           end
 
-          def req_secure_headers(body: {}, url: '', method: '')
+          def req_secure_headers(additional_headers, body: {}, url: '', method: '')
+            raise Fintecture::ValidationException.new('additional_headers must be an object') if additional_headers != nil && !additional_headers.is_a?(Hash) 
+          
             payload = ( body.class.name == 'String' ? body : body.to_s )
             path_name = URI(url).path
             search_params = URI(url).query
@@ -70,7 +73,10 @@ module Fintecture
                 'X-Request-ID' => x_request_id
             }.merge(payload ? digest : {})
 
-    
+            # Add additional_headers if exists
+            headers = headers.merge(additional_headers) if additional_headers != nil
+
+
             headers['Signature'] = Fintecture::Utils::Crypto.create_signature_header({'(request-target)' => request_target}.merge(headers))
             headers
           end
@@ -82,6 +88,8 @@ module Fintecture
         end
       end
     end
+
+
     module DisabledEncoder
       class << self
         extend Forwardable

@@ -21,12 +21,9 @@ module Fintecture
 
         def sign_payload(payload)
           payload = payload.to_json.to_s if payload.is_a? Hash
-
           digest = OpenSSL::Digest::SHA256.new
-
           private_key = OpenSSL::PKey::RSA.new(Fintecture.private_key)
 
-          
           begin
             signature = private_key.sign(digest, payload)
             Base64.strict_encode64(signature)
