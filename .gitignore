@@ -14,3 +14,6 @@ lib/example.rb
 
 .DS_Store
 fintecture-*.gem
+deleteMe.json
+deleteMe.rb
+deleteMe.txt

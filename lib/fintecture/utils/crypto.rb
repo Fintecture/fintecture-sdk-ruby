@@ -21,7 +21,6 @@ module Fintecture
 
         def sign_payload(payload)
           payload = payload.to_json.to_s if payload.is_a? Hash
-
           digest = OpenSSL::Digest::SHA256.new
           private_key = OpenSSL::PKey::RSA.new(Fintecture.private_key)
 
@@ -56,6 +55,8 @@ module Fintecture
           signing = []
           header = []
 
+
+
           Fintecture::Utils::Constants::SIGNEDHEADERPARAMETERLIST.each do |param|
             next unless headers[param]
 
@@ -63,11 +64,12 @@ module Fintecture
             signing << "#{param_low}: #{headers[param]}"
             header << param_low
           end
+          
 
           # Double quote in join needed. If not we will get two slashes \\n
           signature = sign_payload signing.join("\n")
-
           'keyId="' + Fintecture.app_id + '",algorithm="rsa-sha256",headers="' + header.join(' ') + '",signature="' + signature + '"'
+           
         end
 
       end
