@@ -1,7 +1,7 @@
 require 'json'
 require 'faraday'
-require 'fintecture/api/endpoints/pis'
-require 'fintecture/api/base_url'
+require 'fintecture/endpoints/pis'
+require 'fintecture/base_url'
 
 module Fintecture
   class Pis

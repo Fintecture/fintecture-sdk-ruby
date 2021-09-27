@@ -10,15 +10,16 @@ require 'cgi'
 require 'fintecture/version'
 
 # Modules
-require 'fintecture/connect'
-require 'fintecture/authentication'
+require 'fintecture/api/pis/connect'
+require 'fintecture/api/pis/pis'
+require 'fintecture/api/auth/authentication'
 
 # Utilities
 require 'fintecture/utils/crypto'
 
 # Endpoints
-require 'fintecture/api/base_url'
-require 'fintecture/api/endpoints/authentication'
+require 'fintecture/base_url'
+require 'fintecture/endpoints/authentication'
 
 # Connections
 require 'fintecture/faraday/authentication/connection'

@@ -1,5 +1,5 @@
 require 'json'
-require 'fintecture/pis'
+require 'fintecture/api/pis/pis'
 
 RSpec.describe Fintecture::Pis do
 
