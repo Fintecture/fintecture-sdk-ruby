@@ -1,46 +1,33 @@
 # frozen_string_literal: true
 
-require 'base64'
 require 'json'
 require 'faraday'
-require 'fintecture/utils/validation'
-require 'fintecture/exceptions'
-require 'fintecture/utils/date'
-require 'fintecture/utils/constants'
-
+require 'fintecture/endpoints/pis'
+require 'fintecture/base_url'
 module Fintecture
   module Pis
-    class Connect
+    class Refund
       class << self
         # ------------ PUBLIC METHOD ------------
-        def generate(client, payload, state, redirect_uri, origin_uri)
+        def generate(client, session_id, amount)
           @client = client
-          
-          # Build the request payload
-          payload = _build_payload(payload)
 
-          # Do the request
-          _request payload, state, redirect_uri, origin_uri
+          # Build the request payload
+          payload = _build_payload session_id, amount
+          # Do the _request request
+          _request payload
         end
 
         private
 
         # ------------ REQUEST ------------
-        def _request(payload, state, redirect_uri, origin_uri)
+        def _request(payload)
           # Get the url request
           url = _endpoint
 
-          # Build uri params
-          params = {}
-          params['redirect_uri'] = redirect_uri if redirect_uri
-          params['origin_uri'] = origin_uri if origin_uri
-          params['state'] = state
-
-          query_string = "?#{params.map { |key, value| "#{key}=#{value}" }.join('&')}"
-
           # Do connect request
           Fintecture::Faraday::Authentication::Connection.post(
-            url: url + query_string,
+            url: url,
             req_body: payload.to_json,
             client: @client,
             custom_content_type: 'application/json',
@@ -50,20 +37,23 @@ module Fintecture
         end
 
         # ------------ BUILD PAYLOAD ------------
-        def _build_payload(payload)
-          payload[:data][:attributes][:amount] = payload[:data][:attributes][:amount].to_s
-
-          unless payload[:data][:attributes][:end_to_end_id]
-            payload[:data][:attributes][:end_to_end_id] =
-              Fintecture::Utils::Crypto.generate_uuid_only_chars
-          end
-
-          payload
+        def _build_payload(session_id, amount)
+          # Return the payload
+          {
+            meta: {
+              session_id: session_id
+            },
+            data: {
+              attributes: {
+                amount: amount.to_s
+              }
+            }
+          }
         end
 
         # ------------ API ENDPOINT ------------
         def _endpoint
-          "#{_api_base_url}/#{Fintecture::Api::Endpoints::Pis::CONNECT}"
+          "#{_api_base_url}/#{Fintecture::Api::Endpoints::Pis::REFUND}"
         end
 
         # ------------ BASE URL ------------
