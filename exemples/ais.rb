@@ -83,4 +83,4 @@ puts connect_id
 puts url
 
 # ------------ Get access token ------------
-puts ais_client.generate_token connect_id
+# puts ais_client.generate_token connect_id
