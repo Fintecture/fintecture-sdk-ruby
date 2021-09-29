@@ -21,7 +21,7 @@ module Fintecture
         # ------------ REQUEST ------------
         def _request(payload, x_language, redirect_uri)
           # Get the url request
-          url = request_to_pay_endpoint
+          url = _endpoint
 
           # Build uri params
           query_string = ''
@@ -48,12 +48,12 @@ module Fintecture
         end
 
         # ------------ API ENDPOINT ------------
-        def request_to_pay_endpoint
-          "#{api_base_url}/#{Fintecture::Api::Endpoints::Pis::REQUEST_TO_PAY}"
+        def _endpoint
+          "#{_api_base_url}/#{Fintecture::Api::Endpoints::Pis::REQUEST_TO_PAY}"
         end
 
         # ------------ BASE URL ------------
-        def api_base_url
+        def _api_base_url
           Fintecture::Api::BaseUrl::FINTECTURE_API_URL[@client.environment.to_sym]
         end
 
