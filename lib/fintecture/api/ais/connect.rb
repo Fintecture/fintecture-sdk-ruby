@@ -39,7 +39,6 @@ module Fintecture
           additional_headers = {}
           additional_headers['app_id'] = @client.app_id
 
-          puts url + query_string
           # Do connect request
           Fintecture::Faraday::Authentication::Connection.get(
             url: url + query_string,
