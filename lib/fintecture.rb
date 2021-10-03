@@ -12,7 +12,6 @@ require 'cgi'
 require 'fintecture/version'
 
 # Modules
-# require 'fintecture/connect'
 require 'fintecture/api/auth/authentication'
 
 # Clients
