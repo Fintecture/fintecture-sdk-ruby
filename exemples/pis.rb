@@ -15,7 +15,7 @@ payload_connect = {
       psu_incorporation: '', # Mandatory - if no fixed beneficiary
       psu_address: {
         street: 'Main St.', # Mandatory
-        number: '123', # Optional
+        # number: '123', # Optional
         complement: '2nd floor', # Optional
         city: 'Paris', # Mandatory
         zip: '75000', # Mandatory
@@ -25,10 +25,10 @@ payload_connect = {
     data: {
       type: 'PIS',
       attributes: {
-        amount: 123, # Mandatory
+        amount: "123", # Mandatory
         currency: 'EUR', # Mandatory
         communication: 'Thanks Mom!', # Mandatory
-        execution_date: '2021-09-23', # Optional
+        # execution_date: '2021-09-31', # Optional
         # beneficiary: {      # Optional
         #     name: "Dummy SA", # Conditional
         #     iban: "FR1420041010050500013M02606", # Conditional
@@ -42,39 +42,39 @@ payload_connect = {
         #     form: "", # Mandatory if no fixed beneficiary
         #     incorporation: "" # Mandatory if no fixed beneficiary
         # },
-        debited_account_id: 'FR1420041010050500013M02606', # Optional
-        debited_account_type: 'iban', # Mandatory if debited_account_id exist
+        # debited_account_id: 'FR1420041010050500013M02606', # Optional
+        # debited_account_type: 'iban', # Mandatory if debited_account_id exist
         # end_to_end_id: '5f78e902907e4209aa8df63659b05d24',
-        scheme: 'AUTO' # Optional
+        # scheme: 'AUTO' # Optional
       }
     }
   }
   
 payload_request_to_pay = {
-meta: {
-    psu_name: 'John Doe', # Mandatory
-    psu_email: 'sylvain.sanfilippo@fintecture.com', # Mandatory
-    psu_phone: '666777888', # Mandatory
-    psu_phone_prefix: '+33', # Optionnal
-    psu_address: {
-    street: 'Main St.', # Mandatory
-    number: '123', # Optional
-    city: 'Paris', # Mandatory
-    zip: '75000', # Mandatory
-    country: 'fr' # Mandatory
-    },
-    expirary: 86_400, # Optional
-    cc: 'sylvain.sanfilippo@fintecture.com', # Optional
-    bcc: 'sylvain.sanfilippo@fintecture.com' # Optional
-},
-data: {
-    type: 'REQUEST_TO_PAY',
-    attributes: {
-    amount: 123, # Mandatory
-    currency: 'EUR', # Mandatory
-    communication: 'Thanks Mom!' # Mandatory
-    }
-}
+  meta: {
+      psu_name: 'John Doe', # Mandatory
+      psu_email: 'sylvain.sanfilippo@fintecture.com', # Mandatory
+      psu_phone: '666777888', # Mandatory
+      psu_phone_prefix: '+33', # Optionnal
+      psu_address: {
+      street: 'Main St.', # Mandatory
+      number: '123', # Optional
+      city: 'Paris', # Mandatory
+      zip: '75000', # Mandatory
+      country: 'fr' # Mandatory
+      },
+      expirary: 86_400, # Optional
+      cc: 'sylvain.sanfilippo@fintecture.com', # Optional
+      bcc: 'sylvain.sanfilippo@fintecture.com' # Optional
+  },
+  data: {
+      type: 'REQUEST_TO_PAY',
+      attributes: {
+      amount: 123, # Mandatory
+      currency: 'EUR', # Mandatory
+      communication: 'Thanks Mom!' # Mandatory
+      }
+  }
 }
   
 payload_initiate = {
@@ -162,7 +162,7 @@ z/ZLU1tK4wJqXqKBEz+mzapJZpo9tzxrg7pg8VJG/a58fplraTchL6N6PFL/DEY9
 # ------------ Get access token ------------
 pis_client.generate_token
 # ------------ Connect ------------
-puts pis_client.connect payload_connect, "ok", "https://www.google.fr", "http://example.com/checkout?session=123"
+puts pis_client.connect payload_connect, "ok", "https://www.google.fr"
 # ------------ Request to pay ------------
 # puts pis_client.request_to_pay payload_request_to_pay, 'fr', "https://www.google.fr"
 # ------------ Get payments ------------
