@@ -18,13 +18,13 @@ module Fintecture
             end
           end
 
-          def post(url:, req_body: nil, client: nil, custom_content_type: nil, bearer: nil, secure_headers: false, additional_headers: nil)
+          def post(url:, req_body: nil, client: nil, custom_content_type: nil, bearer: nil, secure_headers: false, additional_headers: nil, disableAuthorization: nil)
             @client = client
             conn = connection(url)
 
             res = conn.post do |req|
               req.options.params_encoder = Faraday::DisabledEncoder
-              req.headers = req_headers(custom_content_type, bearer, secure_headers, additional_headers,
+              req.headers = req_headers(custom_content_type, bearer, secure_headers, additional_headers, disableAuthorization,
                                         method: 'post', body: req_body, url: url)
               req.body = req_body
             end
@@ -32,38 +32,54 @@ module Fintecture
             !res.success? ? Fintecture::ApiException.error(res) : res
           end
 
-          def get(url:, req_body: nil, client: nil, custom_content_type: nil, bearer: nil, secure_headers: false, additional_headers: nil)
+          def get(url:, req_body: nil, client: nil, custom_content_type: nil, bearer: nil, secure_headers: false, additional_headers: nil, disableAuthorization: nil)
             @client = client
             conn = connection(url)
 
             res = conn.get do |req|
               req.options.params_encoder = Faraday::DisabledEncoder
-              req.headers = req_headers(custom_content_type, bearer, secure_headers, additional_headers, method: 'get',
-                                                                                                         url: url)
+              req.headers = req_headers(custom_content_type, bearer, secure_headers, additional_headers, disableAuthorization,
+                                         method: 'get', url: url)
               req.body = req_body
             end
 
             !res.success? ? Fintecture::ApiException.error(res) : res
           end
 
-          def req_headers(custom_content_type, bearer, secure_headers, additional_headers, url:, method: '', body: {})
+          def delete(url:, req_body: nil, client: nil, custom_content_type: nil, bearer: nil, secure_headers: false, additional_headers: nil, disableAuthorization: nil)
+            @client = client
+            conn = connection(url)
+
+            res = conn.delete do |req|
+              req.options.params_encoder = Faraday::DisabledEncoder
+              req.headers = req_headers(custom_content_type, bearer, secure_headers, additional_headers, disableAuthorization,
+                                        method: 'delete', body: req_body, url: url)
+              req.body = req_body
+            end
+
+            !res.success? ? Fintecture::ApiException.error(res) : res
+          end
+
+          def req_headers(custom_content_type, bearer, secure_headers, additional_headers, disableAuthorization, url:, method: '', body: {})
+            if !additional_headers.nil? && !additional_headers.is_a?(Hash)
+              raise Fintecture::ValidationException, 'additional_headers must be an object'
+            end
             client_token = Base64.strict_encode64("#{@client.app_id}:#{@client.app_secret}")
 
             headers = {
               'Accept' => 'application/json',
               'User-Agent' => "Fintecture Ruby SDK v #{Fintecture::VERSION}",
-              'Authorization' => bearer || "Basic #{client_token}",
               'Content-Type' => custom_content_type || 'application/x-www-form-urlencoded'
             }
-            headers = headers.merge(secure_headers ? req_secure_headers(additional_headers, body: body, url: url, method: method) : {})
+            headers['Authorization'] =  bearer || "Basic #{client_token}" if !disableAuthorization
             headers = headers.merge(additional_headers) unless additional_headers.nil?
+            headers = headers.merge(secure_headers ? req_secure_headers( body: body, url: url, method: method) : {})
+            
+            # puts headers
             headers
           end
 
-          def req_secure_headers(additional_headers, body: {}, url: '', method: '')
-            if !additional_headers.nil? && !additional_headers.is_a?(Hash)
-              raise Fintecture::ValidationException, 'additional_headers must be an object'
-            end
+          def req_secure_headers( body: {}, url: '', method: '')
 
             payload = (body.instance_of?(String) ? body : body.to_s)
             path_name = URI(url).path
@@ -91,6 +107,18 @@ module Fintecture
           def load_digest(payload)
             { 'Digest' => "SHA-256=#{Fintecture::Utils::Crypto.hash_base64(payload)}" }
           end
+
+          def as_json(element)
+            return JSON(element.to_json) if element.is_a? Hash
+  
+            begin
+              element.as_json
+            rescue NoMethodError
+              raise Fintecture::ValidationException,
+                    "invalid parameter format, the parameter should be a Hash or an Object Model instead a #{element.class.name}"
+            end
+          end
+
         end
       end
     end
