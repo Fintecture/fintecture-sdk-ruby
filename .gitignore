@@ -14,3 +14,4 @@ lib/example.rb
 
 .DS_Store
 fintecture-*.gem
+test.json
