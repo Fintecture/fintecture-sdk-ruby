@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'json'
+
 module Fintecture
   class ValidationException < RuntimeError; end
 
@@ -37,7 +39,14 @@ module Fintecture
           error_string += "\n\n#{formated_error}"
         end
         error_string += "\n\n"
-        error_string
+
+        
+        {
+          type: "Fintecture api",
+          status: status,
+          errors: errors_array,
+          error_string: error_string
+        }.to_json
       end
 
       def _construct_message_error(res, body)
@@ -51,8 +60,18 @@ module Fintecture
         error_string += "\n\n#{formated_error}"
 
         error_string += "\n\n"
-        error_string
+
+        {
+          type: "Fintecture api",
+          status: status,
+          errors: [error],
+          error_string: error_string
+        }.to_json
+        
       end
+
+
+
     end
   end
 end
