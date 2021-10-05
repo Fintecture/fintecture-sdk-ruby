@@ -23,200 +23,321 @@ Or install it yourself as:
 
 Get started by subscribing to a free developer account. Join today to get access to our sandbox by registering on the [developer console](https://console.fintecture.com) by creating your first sets of API Keys. When creating an account, specify you are an ECOMMERCE. When you’re ready to deploy to production, just go through the Activation Form in your console. Once the Fintecture Team activates your account, you’ll be ready to start receiving real bank transfers directly on the bank account specified during activation.
 
-Initialize your client credentials
-
-```ruby
-Fintecture.app_id = 'your_app_id'
-Fintecture.app_secret = 'your_app_secret'
-Fintecture.private_key = %q(your_private_key)
-```
-    
-    
-#### Environments
-
 By default `sandbox` is the initial environment, but you can change to sandbox by doing
 
+Initialize your PIS client 
+
 ```ruby
-Fintecture.environment = 'sandbox'
+pis_client = Fintecture::PisClient.new({
+    environment: 'sandbox', # => ["sandbox", "test", "production"]
+    app_id: 'your_app_id',
+    app_secret: 'your_app_secret',
+    private_key: %q(your_private_key)
+})
+```    
+
+
+
+Initialize your AIS client 
+
+```ruby
+ais_client = Fintecture::AisClient.new({
+    environment: 'sandbox', # => ["sandbox", "test", "production"]
+    app_id: 'your_app_id',
+    app_secret: 'your_app_secret',
+    private_key: %q(your_private_key)
+})
 ```
 
-You can also see the available environments
 
-    Fintecture::ENVIRONMENTS
-     => ["sandbox", "production"]
 
-### Authentication     
-    
+## PIS     
+PIS client properties
+```ruby
+pis_client.app_id
+pis_client.app_secret
+pis_client.private_key
+pis_client.environment
+pis_client.token
+pis_client.token_expires_in
+```
 
 #### Access token
-
+This method return the token and store it in the client for future requests
 ```ruby
-Fintecture::Pis.get_access_token
+pis_client.generate_token
 ```
 
-### Connect 
 
-#### Get connect URL
+#### POST /connect
+Documentation => https://docs.fintecture.com/v2/#post-post-post-connect
+ - An example of the JSON payload in the right column in "Request Body" section
+ - An exemple of response in the right column in "Request Body" section
+ - The definitions of each field in the "Body Parameters" section
+
 ```ruby
-payment_attrs = {
-    amount: 123, 
-    currency: 'EUR', 
-    communication: 'Thanks Mom!', 
-    execution_date: '2021-09-23', 
-    beneficiary: {     
-        name: "Bob Smith", 
-        iban: "FR1420041010050500013M02606", 
-        swift_bic: "BANKFRXXXXX", 
-        street: "road of somewhere", 
-        number: "2", 
-        complement:"", 
-        city: "Paris", 
-        zip: "93160", 
-        country: "FR",
-        form: "",
-        incorporation: "" 
-    },
-    debited_account_id: 'FR1420041010050500013M02606', 
-    debited_account_type: 'iban',
-    end_to_end_id: '5f78e902907e4209aa8df63659b05d24',
-    scheme: 'AUTO', 
-    customer_full_name: 'John Doe', 
-    customer_email: 'john.doe@email.com',
-    customer_phone: '666777888',
-    customer_phone_prefix: '',
-    customer_ip: '127.0.0.1', 
-    customer_form: '',
-    customer_incorporation: '', 
-    customer_address: { 
-        street: 'Main St.', 
-        number: '123', 
-        complement: '2nd floor', 
-        city: 'Paris', 
-        zip: '75000', 
-        country: 'fr' 
-    },
-    redirect_uri: 'http://www.google.fr', 
-    origin_uri: 'http://example.com/checkout?session=123',
-    state: 'somestate' 
+# connect (payload, state, redirect_uri = nil, origin_uri = nil)
+#       payload: {}
+#       state: string
+#       redirect_uri: string
+#       origin_uri: string
+
+response = pis_client.connect payload, "my-state", "https://www.my-redirect-uri.fr", "https://www.my-origine-uri.fr"
+```
+
+
+#### POST /initiate
+Documentation => https://docs.fintecture.com/v2/#post-post-post-initiate
+ - An example of the JSON payload in the right column in "Request Body" section
+ - An exemple of response in the right column in "Request Body" section
+ - The definitions of each field in the "Body Parameters" section
+
+```ruby
+# initiate (payload, provider_id, redirect_uri, state = nil)
+#       payload: {}
+#       provider_id: string
+#       redirect_uri: string
+#       state: string
+
+response = pis_client.initiate payload, "cmcifrpp", "https://www.my-redirect-uri.fr", "my-state"
+```
+
+#### GET /payments
+Documentation => https://docs.fintecture.com/v2/#get-get-get-payments
+ - An exemple of response in the right column in "Request Body" section
+
+```ruby
+# payments (session_id = nil)
+#       session_id: string
+
+response = pis_client.payments "7f47d3675f5d4964bc416b43af63b06e"
+OR
+response = pis_client.payments 
+```
+This endpoint returns the details of all transfers or of a specific transfer
+
+#### POST /refund
+Documentation => https://docs.fintecture.com/v2/#post-post-post-refund
+ - An exemple of response in the right column in "Request Body" section
+
+```ruby
+# refund (session_id, amount = nil)
+#       session_id: string
+#       amount: number
+
+response = pis_client.refund "7f47d3675f5d4964bc416b43af63b06e", 5.75
+```
+If the amount is not specified, refund the total
+
+#### POST /request-to-pay
+Documentation => https://docs.fintecture.com/v2/#post-post-post-request-to-pay
+ - An example of the JSON payload in the right column in "Request Body" section
+ - An exemple of response in the right column in "Request Body" section
+ - The definitions of each field in the "Body Parameters" section
+ - The definition of x_language field in the "Header Parameters" section
+
+```ruby
+# refund (payload, x_language, redirect_uri = nil)
+#       payload: {}
+#       x_language: string
+#       redirect_uri: string
+
+response = pis_client.request_to_pay payload, 'fr', "https://www.my-redirect-uri.fr"
+```
+
+#### GET /settlements
+Documentation => https://docs.fintecture.com/v2/#get-get-get-settlements
+ - An exemple of response in the right column in "Request Body" section
+
+```ruby
+# settlements (settlement_id = nil)
+#       settlement_id: string
+
+response = pis_client.settlements
+OR
+response = pis_client.settlements "127335fdeb073e0eb2313ba0bd71ad44"
+```
+
+## AIS     
+AIS client properties
+```ruby
+ais_client.app_id
+ais_client.app_secret
+ais_client.private_key
+ais_client.environment
+ais_client.token
+ais_client.refresh_token
+ais_client.token_expires_in
+``` 
+#### GET /connect
+Documentation => https://docs.fintecture.com/v2/#get-get-get-connect
+ - An exemple of response in the right column in "Request Body" section
+
+```ruby
+# connect (state, redirect_uri, scope = nil)
+#       state: string
+#       redirect_uri: string
+#       scope: string
+
+response = ais_client.connect "my-state", "https://www.my-redirect-uri.fr"
+```
+When you follow the returned url, you'll be redirect with "customer_id" & "code" parameters
+```ruby
+customer_id = "fa51058b5f8306f1e048f1adda5488a9"
+code = "f66ec660b0bbd2797bf6847fb4b98454"
+```
+
+#### Access token
+Documentation => https://docs.fintecture.com/v2/#post-post-post-oauth-accesstoken
+
+This method return the token and store it in the client for future requests
+```ruby
+ais_client.generate_token code
+```
+
+#### Refresh token
+Documentation => https://docs.fintecture.com/v2/#post-post-post-oauth-refreshtoken
+
+This method return the token and store it in the client for future requests
+If you do not pass the refreshtoken as a parameter, the client refreshtoken will be used
+```ruby
+# generate_refresh_token (refresh_token = nil)
+#       refresh_token: string
+
+ais_client.generate_refresh_token
+```
+
+#### GET /authorize
+Documentation => https://docs.fintecture.com/v2/#get-get-get-authorize
+ - An exemple of response in the right column in "Request Body" section
+ - The definition of "x_psu_id" and "x_psu_ip_address" fields in the "Header Parameters" section
+
+```ruby
+# authorize (app_id_auth: false, provider_id:, redirect_uri:, state: nil, x_psu_id: nil, x_psu_ip_address: nil)
+#       app_id_auth: boolean
+#       provider_id: string
+#       redirect_uri: string
+#       state: string
+#       x_psu_id: string
+#       x_psu_ip_address: string
+
+response = ais_client.authorize app_id_auth: false, provider_id: "agfbfr", redirect_uri: "https://www.google.fr", state: "ok", x_psu_id: "123456", x_psu_ip_address: "192.168.1.1"
+```
+
+#### GET /authorize/decoupled
+Documentation => https://docs.fintecture.com/v2/#get-get-get-authorize-decoupled
+ - An exemple of response in the right column in "Request Body" section
+
+```ruby
+# authorize_decoupled (app_id_auth: false, provider_id:, polling_id:)
+#       app_id_auth: boolean
+#       provider_id: string
+#       polling_id: string
+
+response = ais_client.authorize_decoupled app_id_auth: false, provider_id: "agfbfr", polling_id: "1234"
+```
+
+#### GET /accounts
+Documentation => https://docs.fintecture.com/v2/#get-get-get-accounts
+ - An exemple of response in the right column in "Request Body" section
+
+```ruby
+# accounts (customer_id:, account_id: nil, remove_nulls: nil, withBalances: nil)
+#       customer_id: string
+#       account_id: string
+#       remove_nulls: boolean
+#       withBalances: boolean
+
+response = ais_client.accounts customer_id: customer_id, account_id: nil, remove_nulls: nil, withBalances: nil
+```
+
+#### GET /transactions
+Documentation => https://docs.fintecture.com/v2/#get-get-get-transactions
+ - An exemple of response in the right column in "Request Body" section
+
+```ruby
+# transactions (customer_id:, account_id:, remove_nulls: nil, convert_dates: nil, filters: nil)
+#       customer_id: string
+#       account_id: string
+#       remove_nulls: boolean
+#       convert_dates: boolean
+#       filters: {}
+
+transactions_filters = {
+  "filter[date_to]": "2020-01-01",
+  'filter[date_from]': "max" # Date or 'max'
 }
-tokens = Fintecture::Pis.get_access_token
-
-connect_response = Fintecture::Pis.get_connect tokens['access_token'], payment_attrs
-connect_response_body = JSON.parse connect_response.body
-url = connect_response_body['meta']['url']
+response = ais_client.transactions customer_id: customer_id, account_id: "b71722204d1a3f5ecd895", remove_nulls: true, convert_dates: true, filters: transactions_filters
 ```
-Explanation of each field:
 
-* amount: **[mandatory]** The amount of the payment initiation request. Min 1.00 and Max is variable based on bank's policy.
-* currency: **[mandatory]** The currency of the payment initiation request. Currently, only EUR and GBP is supported.
-* communication: **[optional]** A message sent to the beneficiary of the payment and visible on his bank statement. In the context of ecommerce payment collection, the order reference is inputted here (with an optional prefer ex: REF#23444)
-* execution_date: **[optional]** A future date to execute the payment. If the execution_date field is omitted, the payment is to be sent immediately.
-* beneficiary: **[optional]** The beneficiary of the payment. It has the following structure:
-  * name: **[optional]** The beneficiary name
-  * iban: **[optional]** The beneficiary iban
-  * swift_bic: **[optional]** The beneficiary swift or bic code
-  * street: **[optional]** The beneficiary address street name
-  * number: **[optional]** The beneficiary address number
-  * complement: **[optional]** Complement information to the beneficiary address
-  * city: **[optional]** The beneficiary address city
-  * zip: **[optional]** The beneficiary address zip code
-  * country: **[optional]** The beneficiary country code (2 letters)
-  * form: **[optional]** 
-  * incorporation: **[optional]** 
-* debited_account_id: **[optional]** Predefine the account which which the payment will be done
-* debited_account_type: **[mandatory if debited_account_id]** "internal" or "iban", "bban".
-* end_to_end_id: **[optional]** A unique ID given by the creator of the payment and send to the bank. By default de session_id is used.
-* scheme: **[optional]** The payment scheme to use. Default: AUTO (automatic selection), SEPA, INSTANT_SEPA	
-* customer_full_name: **[mandatory]** The full name of the payer
-* customer_email: **[mandatory]** The email of the payer
-* customer_phone: **[optional]** The phone of the payer
-* customer_phone_prefix: **[optional]**
-* customer_ip: **[mandatory]** The ip address of the payer
-* customer_address: **[optional]** The address of the payer. It has the following structure:
-  * street: **[optional]** The address street name
-  * number: **[optional]** The address number
-  * complement: **[optional]** Complement information to the address
-  * city: **[optional]** The address city* 
-  * zip: **[optional]** The address zip code
-  * country: **[optional]** The country code (2 letters)
-* redirect_uri: **[mandatory]** The callback URL to which the customer is redirected after authentication with his bank
-* origin_uri: **[optional]** A URL to which the customer will be redirected if he wants to exit Fintecture Connect
-* state: **[optional]** A state parameter which is sent back on callback
-
-#### Get Request-to-pay
+#### GET /accountholders
+Documentation => https://docs.fintecture.com/v2/#get-get-get-accountholders
+ - An exemple of response in the right column in "Request Body" section
 
 ```ruby
-payment_attrs = {
-    x_language: 'fr',
-    amount: 123, 
-    currency: 'EUR', 
-    communication: 'Thanks Mom!', 
-    customer_full_name: 'John Doe', 
-    customer_email: 'john.doe@email.com',
-    customer_phone: '666777888',
-    customer_phone_prefix: '+33',
-    customer_address: { 
-        street: 'Main St.', 
-        number: '123', 
-        city: 'Paris', 
-        zip: '75000', 
-        country: 'fr' 
-    },
-    expirary: 86400, 
-    cc: 'exemple@gmail.com',
-    bcc: 'exemple@gmail.com',
-    redirect_uri: 'http://www.google.fr'
+# account_holders (customer_id:, remove_nulls: nil)
+#       customer_id: string
+#       remove_nulls: boolean
+
+response = ais_client.account_holders customer_id: customer_id, remove_nulls: true
+```
+
+#### DELETE /customer
+Documentation => https://docs.fintecture.com/v2/#delete-delete-delete-customer
+ - An exemple of response in the right column in "Request Body" section
+
+```ruby
+# account_holders (customer_id:)
+#       customer_id: string
+
+response = ais_client.delete_customer customer_id: customer_id
+```
+## RESSOURCES
+Use the PIS client to get ressources. The "generate_token" step is not needed for this calls
+
+#### GET /providers
+Documentation => https://docs.fintecture.com/v2/#get-get-get-providers
+ - An exemple of response in the right column in "Request Body" section
+
+```ruby
+# providers (provider_id: nil, paramsProviders: nil)
+#       provider_id: string
+#       paramsProviders: string
+
+paramsProviders = {
+    'filter[country]': 'FR',
+    'filter[pis]': 'SEPA',
+    'filter[ais]': 'Accounts',
+    'filter[psu_type]': 'retail',
+    'filter[auth_model]': 'redirect',
+    'sort[name]': 'DESC',
+    'sort[full_name]': 'DESC',
+    'sort[country]': 'DESC',
+    'sort[provider_id]': 'DESC'
 }
-tokens = Fintecture::Pis.get_access_token
-
-request_to_pay_response = Fintecture::Pis.request_to_pay @tokens['access_token'], payment_attrs
-request_to_pay_response_body = JSON.parse request_to_pay_response.body
-meta = request_to_pay_response_body['meta']
+response = pis_client.providers provider_id: 'agfbfr', paramsProviders: paramsProviders
 ```
-Explanation of each field:
 
-* x_language: **[mandatory]** 
-* amount: **[mandatory]** The amount of the payment initiation request. Min 1.00 and Max is variable based on bank's policy.
-* currency: **[mandatory]** The currency of the payment initiation request. Currently, only EUR and GBP is supported.
-* communication: **[optional]** A message sent to the beneficiary of the payment and visible on his bank statement. In the context of ecommerce payment collection, the order reference is inputted here (with an optional prefer ex: REF#23444)
-* customer_full_name: **[mandatory]** The full name of the payer
-* customer_email: **[mandatory]** The email of the payer
-* customer_phone: **[mandatory]** The phone of the payer
-* customer_phone_prefix: **[mandatory]**
-* customer_address: **[optional]** The address of the payer. It has the following structure:
-  * street: **[optional]** The address street name
-  * number: **[optional]** The address number
-  * city: **[optional]** The address city* 
-  * zip: **[optional]** The address zip code
-  * country: **[optional]** The country code (2 letters)
-* expirary: **[optional]** The number of seconds of the validity of the request to pay, by default 86400	
-* cc: **[optional]** The CC email to receive a copy (If multiple emails, the emails must be concatenated with a comma.)	
-* bcc: **[optional]** The BCC email to receive a copy (If multiple emails, the emails must be concatenated with a comma.)	
-* redirect_uri: **[optional]** The callback URL to which the customer is redirected after authentication with his bank
-
-
-
-
-#### Get a specific payment
+#### GET /applications
+Documentation => https://docs.fintecture.com/v2/#get-get-get-applications
+ - An exemple of response in the right column in "Request Body" section
 
 ```ruby
-payment_response = Fintecture::Pis.get_payments @tokens['access_token'], @session_id
-payment_response_body = JSON.parse payment_response.body
+# applications ()
 
-verified = (payment_response_body['meta']['status'] === 'payment_created')
+response = pis_client.applications
 ```
 
-If the payment was success, the status of the response (_payment_response_body['meta']['status']_) should be **payment_created**
-
-#### Get payments
+#### GET /testaccounts
+Documentation => https://docs.fintecture.com/v2/#get-get-get-testaccounts
+ - An exemple of response in the right column in "Request Body" section
 
 ```ruby
-payments_response = Fintecture::Pis.get_payments @tokens['access_token']
-payments_response_body = JSON.parse payments_response.body
-payments_array = payment_response_body["data"]
-```
+# test_accounts (provider_id = nil)
+#       provider_id: string
 
-If the payment was success, the status of the response (_payment_response_body['meta']['status']_) should be **payment_created**
+response = pis_client.test_accounts 'agfbfr'
+```
 
 
 ## Development
