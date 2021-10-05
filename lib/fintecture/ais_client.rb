@@ -19,16 +19,15 @@ module Fintecture
       @private_key = config[:private_key]
 
       environment = config[:environment].downcase
-      # TODO Check the environment everywhere
-      # unless @environments.include?(environment)
-      #   raise "#{environment} not a valid environment, options are [#{@environments.join(', ')}]"
-      # end
+      unless environment.include?(environment)
+        raise "#{environment} not a valid environment, options are [#{environment.join(', ')}]"
+      end
 
       @environment = environment
     end
 
     # Getters
-    attr_reader :app_id, :app_secret, :private_key, :environment, :token
+    attr_reader :app_id, :app_secret, :private_key, :environment, :token, :token_expires_in, :refresh_token
 
     #  Methodes
     def connect(state, redirect_uri, scope = nil)
@@ -40,12 +39,20 @@ module Fintecture
     def generate_token (auth_code)
       res = Fintecture::Authentication.get_access_token self, auth_code
       body = JSON.parse res.body
-
       @token = body['access_token']
+      @token_expires_in = body['expires_in']
+      @refresh_token = body['refresh_token']
 
       body
     end
 
+    def generate_refresh_token (refresh_token = nil)
+      res = Fintecture::Authentication.refresh_token self, (refresh_token || @refresh_token)
+      body = JSON.parse res.body
+      @token = body['access_token']
+
+      body
+    end
     def accounts(customer_id:, account_id: nil, remove_nulls: nil, withBalances: nil)
       res = Fintecture::Ais::Accounts.get self, customer_id, account_id, remove_nulls, withBalances
 
