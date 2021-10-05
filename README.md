@@ -339,7 +339,52 @@ Documentation => https://docs.fintecture.com/v2/#get-get-get-testaccounts
 response = pis_client.test_accounts 'agfbfr'
 ```
 
+## API Errors handling
+Hash version
+```ruby
+begin
+    pis_client.refund "7f47d3675f5d4964bc416b43af63b06e", 1
+rescue => e
+    error = JSON.parse e.to_s
+    puts error
+end
+```
 
+```ruby
+{
+    "type"=>"Fintecture api",
+    "status"=>401,
+    "errors"=>[
+        {
+            "code"=>"invalid_token",
+            "title"=>"Invalid Token",
+            "message"=>"The token is either invalid or expired."
+        }
+    ],
+    "error_string"=>"\nFintecture server errors : \n status: 401 \n code: unauthorized\n id : 3006ddbf-2f97-44d8-9f63-35711b78e8a6\n\n   code: invalid_token\n   title: Invalid Token\n   message: The token is either invalid or expired.\n\n"
+}
+```
+Text version
+```ruby
+begin
+    pis_client.refund "7f47d3675f5d4964bc416b43af63b06e", 1
+rescue => e
+    error = JSON.parse e.to_s
+    puts error['error_string']
+end
+```
+
+```ruby
+Fintecture server errors :
+ status: 401
+ code: unauthorized
+ id : 2adb9e35-ff0d-4477-959e-b1b1a7d7c812
+
+   code: invalid_token
+   title: Invalid Token
+   message: The token is either invalid or expired.
+
+```
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
