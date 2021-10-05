@@ -38,7 +38,6 @@ module Fintecture
             query_string = "?#{params.map { |key, value| "#{key}=#{value}" }.join('&')}"
           end
 
-          puts  url + query_string
           # Do connect request
           Fintecture::Faraday::Authentication::Connection.get(
             url: url + query_string,

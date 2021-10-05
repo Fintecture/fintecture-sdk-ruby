@@ -44,7 +44,6 @@ module Fintecture
           additional_headers['x-psu-id'] = x_psu_id if x_psu_id
           additional_headers['x-psu-ip-address'] = x_psu_ip_address if x_psu_ip_address
 
-          puts query_string
           # Do connect request
           Fintecture::Faraday::Authentication::Connection.get(
             url: url + query_string,
