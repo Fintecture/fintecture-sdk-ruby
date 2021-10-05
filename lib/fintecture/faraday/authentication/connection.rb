@@ -21,7 +21,6 @@ module Fintecture
           def post(url:, req_body: nil, client: nil, custom_content_type: nil, bearer: nil, secure_headers: false, additional_headers: nil, disableAuthorization: nil)
             @client = client
             conn = connection(url)
-
             res = conn.post do |req|
               req.options.params_encoder = Faraday::DisabledEncoder
               req.headers = req_headers(custom_content_type, bearer, secure_headers, additional_headers, disableAuthorization,
@@ -75,7 +74,6 @@ module Fintecture
             headers = headers.merge(additional_headers) unless additional_headers.nil?
             headers = headers.merge(secure_headers ? req_secure_headers( body: body, url: url, method: method) : {})
             
-            # puts headers
             headers
           end
 
@@ -131,8 +129,19 @@ module Fintecture
 
       def self.encode(params)
         return nil if params.nil?
-
-        query_string = params.map { |key, value| "#{key}=#{value}" }.join('&').to_s
+        newParams = {}
+        params.each { |key, value| 
+            if value.class == Hash
+                value.each { |subkey, subvalue| 
+                    newParams["#{key}[#{subkey}]"] = subvalue    
+                }
+            else 
+                newParams[key] = value
+            end
+        }
+        
+        query_string = newParams.map { |key, value| "#{key}=#{value}" }.join('&').to_s
+        query_string
       end
 
       class << self
