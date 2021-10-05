@@ -29,7 +29,7 @@ module Fintecture
     end
 
     # Getters
-    attr_reader :app_id, :app_secret, :private_key, :environment, :token
+    attr_reader :app_id, :app_secret, :private_key, :environment, :token, :token_expires_in
 
     #  Methodes
     def generate_token
@@ -37,6 +37,7 @@ module Fintecture
       body = JSON.parse res.body
 
       @token = body['access_token']
+      @token_expires_in = body['expires_in']
 
       body
     end
