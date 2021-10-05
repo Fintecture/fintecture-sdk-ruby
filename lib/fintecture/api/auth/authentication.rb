@@ -24,10 +24,11 @@ module Fintecture
         Fintecture::Faraday::Authentication::Connection.post url: access_token_url, req_body: body, client: client
       end
 
-      def refresh_token(refresh_token)
+      def refresh_token(client, refresh_token)
+        @client = client
         body = refresh_token_data refresh_token
 
-        Fintecture::Faraday::Authentication::Connection.post url: refresh_token_url, req_body: body
+        Fintecture::Faraday::Authentication::Connection.post url: refresh_token_url, req_body: body, client: client
       end
 
       private
