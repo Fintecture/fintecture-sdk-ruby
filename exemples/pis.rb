@@ -7,7 +7,7 @@ require './lib/fintecture'
 payload_connect = {
     meta: {
       psu_name: 'John Doe', # Mandatory
-      psu_email: 'sylvain.sanfilippo@fintecture.com', # Mandatory
+      psu_email: 'John.Doe@gmail.com', # Mandatory
       psu_phone: '666777888', # Mandatory
       psu_phone_prefix: '', # Optionnal
       psu_ip: '127.0.0.1', # Optionnal (Plante la signature)
@@ -48,12 +48,12 @@ payload_connect = {
         # scheme: 'AUTO' # Optional
       }
     }
-  }
+}
   
 payload_request_to_pay = {
   meta: {
       psu_name: 'John Doe', # Mandatory
-      psu_email: 'sylvain.sanfilippo@fintecture.com', # Mandatory
+      psu_email: 'John.Doe@gmail.com', # Mandatory
       psu_phone: '666777888', # Mandatory
       psu_phone_prefix: '+33', # Optionnal
       psu_address: {
@@ -64,8 +64,8 @@ payload_request_to_pay = {
       country: 'fr' # Mandatory
       },
       expirary: 86_400, # Optional
-      cc: 'sylvain.sanfilippo@fintecture.com', # Optional
-      bcc: 'sylvain.sanfilippo@fintecture.com' # Optional
+      cc: 'John.Doe@gmail.com', # Optional
+      bcc: 'John.Doe@gmail.com' # Optional
   },
   data: {
       type: 'REQUEST_TO_PAY',
@@ -78,37 +78,37 @@ payload_request_to_pay = {
 }
   
 payload_initiate = {
-"meta": {
-    "psu_name": 'Bob McCheese',
-    "psu_email": 'sylvain.sanfilippo@fintecture.com',
-    "psu_phone": '09743593535',
-    "psu_address": {
-    "street": 'route de la france',
-    "number": '33',
-    "complement": '2nd floor',
-    "zip": '12001',
-    "city": 'Paris',
-    "country": 'FR'
-    }
-},
-"data": {
-    "type": 'PIS',
-    "attributes": {
-    "amount": '149.30',
-    "currency": 'EUR',
-    "communication": 'Order 6543321'
-    # "beneficiary": {
-    #     "name": "Bob Smith",
-    #     "street": "road of somewhere",
-    #     "number": "2",
-    #     "city": "Paris",
-    #     "zip": "93160",
-    #     "country": "FR",
-    #     "iban": "FR1420041010050500013M02606",
-    #     "swift_bic": "BANKFRXXXXX"
-    # }
-    }
-}
+  "meta": {
+      "psu_name": 'Bob McCheese',
+      "psu_email": 'John.Doe@gmail.com',
+      "psu_phone": '09743593535',
+      "psu_address": {
+      "street": 'route de la france',
+      "number": '33',
+      "complement": '2nd floor',
+      "zip": '12001',
+      "city": 'Paris',
+      "country": 'FR'
+      }
+  },
+  "data": {
+      "type": 'PIS',
+      "attributes": {
+      "amount": '149.30',
+      "currency": 'EUR',
+      "communication": 'Order 6543321'
+      # "beneficiary": {
+      #     "name": "Bob Smith",
+      #     "street": "road of somewhere",
+      #     "number": "2",
+      #     "city": "Paris",
+      #     "zip": "93160",
+      #     "country": "FR",
+      #     "iban": "FR1420041010050500013M02606",
+      #     "swift_bic": "BANKFRXXXXX"
+      # }
+      }
+  }
 }
   
 paramsProviders = {
@@ -164,13 +164,18 @@ pis_client.generate_token
 # ------------ Connect ------------
 puts pis_client.connect payload_connect, "ok", "https://www.google.fr"
 # ------------ Request to pay ------------
-# puts pis_client.request_to_pay payload_request_to_pay, 'fr', "https://www.google.fr"
+puts pis_client.request_to_pay payload_request_to_pay, 'fr', "https://www.google.fr"
 # ------------ Get payments ------------
-# puts pis_client.payments "7f47d3675f5d4964bc416b43af63b06e"
+puts pis_client.payments "7f47d3675f5d4964bc416b43af63b06e"
 # ------------ Initiate ------------
-# puts pis_client.initiate payload_initiate, "cmcifrpp", "https://www.google.fr", "ok"
-# ? ------------ Refund ------------
-# pis_client.refund "7f47d3675f5d4964bc416b43af63b06e", 1
-# ? ------------ settlements ------------
-# pis_client.settlements
-# pis_client.settlements "127335fdeb073e0eb2313ba0bd71ad44"
+puts pis_client.initiate payload_initiate, "cmcifrpp", "https://www.google.fr", "ok"
+# ------------ Refund ------------
+begin
+  pis_client.refund "7f47d3675f5d4964bc416b43af63b06e", 1
+rescue => e
+  error = JSON.parse e.to_s
+  puts error
+end
+# ------------ settlements ------------
+pis_client.settlements
+pis_client.settlements "127335fdeb073e0eb2313ba0bd71ad44"

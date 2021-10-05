@@ -41,10 +41,10 @@ z/ZLU1tK4wJqXqKBEz+mzapJZpo9tzxrg7pg8VJG/a58fplraTchL6N6PFL/DEY9
 
 # ######################## RESSOURCES ########################
 # ------------ Get providers ------------
-# puts pis_client.providers provider_id: 'agfbfr'
-# puts pis_client.providers paramsProviders: paramsProviders
+puts pis_client.providers provider_id: 'agfbfr'
+puts pis_client.providers paramsProviders: paramsProviders
 # ------------ Get applications ------------
-# puts pis_client.applications
+puts pis_client.applications
 # ------------ Get test accounts ------------
-# puts pis_client.test_accounts
-# puts pis_client.test_accounts 'bbvaes'
+puts pis_client.test_accounts
+puts pis_client.test_accounts 'bbvaes'

@@ -5,39 +5,6 @@ require './lib/fintecture'
 
 
 # ------------ Test class -------------
-pis_client = Fintecture::PisClient.new({
-  environment: 'test',
-  app_id: '8603fb08-d2ef-4e73-ba2f-5e4cd80efb65',
-  app_secret: '6c892fbb-15c1-42ec-9296-bbbdf89ffd5d',
-  private_key: '-----BEGIN PRIVATE KEY-----
-MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCmfvSia9VTtjMt
-iFHAP4cE2VYHKGoG+NRz5ciYbsI41jh3eSVwA6aFmOZBb0gXMEvCQZZeNWe4/2LO
-tt3BJLQw9jcLnFQ0P8lhJv4octf+CSLFM34WTkSImsDiKpUgbbo7BUaqYzRShUAc
-SjXlP5zUL7z0a99pPnXAFQzV66vyeVa0IoP2cSbFYAfAY9mp/5lbJQvOsXLA/ay9
-mTNk1u21OFLYfzuta+WJRhFJc05Prb21hd2+Yk+A7S1MkMbFCw5r8rXN9E9iVFcn
-BBPveDGDfSC29n4ZMD/xPjfALXzkfBhukeJwHEIVFhBr3CkVUtSZOpA+Wl4zCGJx
-QknJKOM7AgMBAAECggEAOUSFxLAuikKrS8gNxoCTYnmW+5NNFOTVvp+U5cmDCKW2
-enGzDNpUlrNGz88FDuTPyhthKzpXWOyPAecoU1zaldS6jkXROL+P9tjApw0JehmO
-WiIiBm4ZaJtCKQjYjnTvj4l7CvRgdNnceV6VNyswOFPLPI82Iy8WtWEILzSGyjmg
-Fsrw7WpCKSgzfenoI0Lnz6osQnRf5vHpWqm/NSX4qPuhDsODLI60Z9v2FehTvR8J
-JgHtXm6Eb3jfQh2VunLWFCv0zG9qT1jOATfRZXiEUozwBaX925d8yADqPMjl56vc
-1tyb6L+EDxPBubUzqkwc5t9HuWtlwQfJRAaAfcRNgQKBgQDWZHNBZu7lMlf7VlCt
-ccKu6hcGl0WxWAqaD6dnTIfu4x96zHjypDBHvtKTgTcOun048Lwwx+10DDUbOcPw
-uFOU7uEoitfL8l3S41ah5dCVulfHMSRqZBUmnKQIgh2gQYAW4MpzzK3yOfC3QdKn
-UQjJ7C2thPgwr5FVn85RXjPD2wKBgQDGzuOplVr3mq6Bf9dHDalhs7ICnrxiFy8r
-KGDvJ2ZBfuU9OsjS/rfS3XU32Y+QcqgfgGiykZyBK9ciR4fQB8JB4BMnRo+0wv1W
-hRIaax4sbwdLLx/UaR109g0E/9Z1N5lnByoW4c7Jy9bdf0Ti3wZvCMOVYL54gez/
-Ar5CXmksIQKBgDtnY+QYUFNjaqtylDIq1kW/CRhDbAUinvVnJvxhYTzY480TwOOC
-iPooLpK+d/H1zGKtmYduriW8iC5+CAO4HziiI/Mm3XpeMo8PfN6pHe2Oz2ma/TsZ
-dh7Xwj+1Rd40p/gu2wnRCdWXJlKww1ynAGdqsJFmyZo722o9OF6lWnSHAoGAH7D1
-K6BKWvQGY1BMsd/ko1Vwx+gj4YMOmtOZ+CWQsFoZEtSfFLtT9EInIFsG/qC4WiUv
-C2AY0aJ6bdV3OdsyxSuCAh3GZKs8lSErTJjMu4qLYBnH+iUzc+SRGL3ros3VH05O
-EE24mARtYOubwIqKzQJZoyND2ZPkgpYeXBgOreECgYEAg0+lcBaN02yalOLalCDz
-yBda7xpfvnEYv1VUK/Hb4g9hD8KBciTr1OZo82Mjv7uC0ToBq9vDFmVXV4AbIIl7
-z/ZLU1tK4wJqXqKBEz+mzapJZpo9tzxrg7pg8VJG/a58fplraTchL6N6PFL/DEY9
-02CGyNOpy9nTApObcTv1sPw=
------END PRIVATE KEY-----'
-  })
 ais_client = Fintecture::AisClient.new({
     environment: 'local',
     app_id: '8bd5204a-e467-4d87-86b6-5db5a45a1ea7',
@@ -79,44 +46,38 @@ connect_response = ais_client.connect "ok", "https://www.google.fr"
 connect_id = connect_response['meta']['connect_id']
 url = connect_response['meta']['url']
 
+
 puts "Connect url => #{url}"
 
-customer_id = "8c2e7f6fa3d44f438c6935c7d7382819"
-code = "3ceb00bc35edd10d75c3e066f4bf472b"
+# Put the return of connect url here
+customer_id = "c84e6a2c66862f6ce169a11262b28f4c"
+code = "173535d0acc16271e7942cc6e1772a5b"
+
 
 
 # ------------ Get access token ------------
 ais_client.generate_token code
-
+ais_client.generate_refresh_token
 # ------------ Authorize ------------
-# puts ais_client.authorize app_id_auth: true, provider_id: "agfbfr", redirect_uri: "https://www.google.fr", state: "ok", x_psu_id: nil, x_psu_ip_address: nil
-
+puts ais_client.authorize app_id_auth: true, provider_id: "agfbfr", redirect_uri: "https://www.google.fr", state: "ok", x_psu_id: nil, x_psu_ip_address: nil
 # ------------ Authorize decoupled ------------
 puts ais_client.authorize_decoupled app_id_auth: false, provider_id: "agfbfr", polling_id: "1234"
-
-
 # ------------ Get accounts ------------
-# accounts_response = ais_client.accounts customer_id: customer_id, account_id: nil, remove_nulls: nil, withBalances: nil
-# account = accounts_response['data'].first
-# account_id = account['id']
-# puts account
-
+accounts_response = ais_client.accounts customer_id: customer_id, account_id: nil, remove_nulls: nil, withBalances: nil
+account = accounts_response['data'].first
+account_id = account['id']
 # ------------ Get transactions ------------
-#TODO Signature error with filters
-# transactions_filters = {
-#   "filter[date_to]": "2021-01-01",
-#   "filter[date_from]": "2019-01-01",
-#   "filter[date_from]=max": "max"
-# }
-# transactions_response = ais_client.transactions customer_id: customer_id, account_id: account_id, remove_nulls: false, convert_dates: false, filters: transactions_filters
-# transaction = transactions_response['data'].first
-# puts transaction
-
+transactions_filters = {
+  "filter[date_to]": "2020-01-01",
+  'filter[date_from]': "max"
+}
+transactions_response = ais_client.transactions customer_id: customer_id, account_id: account_id, remove_nulls: true, convert_dates: true, filters: transactions_filters
+transaction = transactions_response['data'].first
+puts transaction
 # ------------ Get account holders ------------
 # Caution the hasAccountholders field in db must have a value = 1.
-# puts ais_client.account_holders customer_id: customer_id, remove_nulls: nil
-
+puts ais_client.account_holders customer_id: customer_id, remove_nulls: nil
 # ------------ Delete customer ------------
-# Customer not found if customer don't use the api before
-# puts ais_client.delete_customer customer_id: customer_id
+# Customer not found if customer you don't use the api before
+puts ais_client.delete_customer customer_id: customer_id
  
