@@ -170,12 +170,7 @@ puts pis_client.payments "7f47d3675f5d4964bc416b43af63b06e"
 # ------------ Initiate ------------
 puts pis_client.initiate payload_initiate, "cmcifrpp", "https://www.google.fr", "ok"
 # ------------ Refund ------------
-begin
-  pis_client.refund "7f47d3675f5d4964bc416b43af63b06e", 1
-rescue => e
-  error = JSON.parse e.to_s
-  puts error
-end
+puts pis_client.refund "7f47d3675f5d4964bc416b43af63b06e", 1
 # ------------ settlements ------------
 pis_client.settlements
 pis_client.settlements "127335fdeb073e0eb2313ba0bd71ad44"
