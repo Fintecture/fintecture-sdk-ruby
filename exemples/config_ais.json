@@ -1,0 +1,8 @@
+{
+    "customer_id" : "the_customer_id_here",
+    "code" : "the_code_here",
+    "environment": "test",
+    "app_id": "your_app_id_here",
+    "app_secret": "your_app_secret_here",
+    "private_key": "your_private_key here"
+}
