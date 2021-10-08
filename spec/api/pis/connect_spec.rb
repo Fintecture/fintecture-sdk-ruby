@@ -7,11 +7,11 @@ config = JSON.parse(File.read('./spec/api/pis/config.json'))
 
 RSpec.describe Fintecture::Pis::Connect do
   pis_client = Fintecture::PisClient.new({
-    environment: config['environment'],
-    app_id: config['app_id'],
-    app_secret: config['app_secret'],
-    private_key: config['private_key']
-  })
+                                           environment: config['environment'],
+                                           app_id: config['app_id'],
+                                           app_secret: config['app_secret'],
+                                           private_key: config['private_key']
+                                         })
 
   payload_connect = {
     meta: {
@@ -59,7 +59,6 @@ RSpec.describe Fintecture::Pis::Connect do
     }
   }
 
-
   it 'POST /connect' do
     pis_client.generate_token
     connect_response = pis_client.connect payload_connect, 'ok'
@@ -72,7 +71,6 @@ RSpec.describe Fintecture::Pis::Connect do
     expect(session_id).not_to be_empty
   end
 
-  
   it 'POST /connect + optional redirect_uri' do
     pis_client.generate_token
     connect_response = pis_client.connect payload_connect, 'ok', 'https://www.google.fr'

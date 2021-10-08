@@ -35,7 +35,6 @@ module Fintecture
   @log_level = nil
   @logger = nil
 
-
   class << self
     attr_accessor :logger
     attr_reader :log_level
@@ -63,4 +62,4 @@ module Fintecture
 end
 
 Fintecture.log_level = ENV['FINTECTURE_LOG'] unless ENV['FINTECTURE_LOG'].nil?
-# TODO Mettre a jour la gem sur le site de package
+# TODO: Mettre a jour la gem sur le site de package

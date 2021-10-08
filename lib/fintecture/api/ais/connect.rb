@@ -49,8 +49,6 @@ module Fintecture
           )
         end
 
-
-
         # ------------ API ENDPOINT ------------
         def _endpoint
           "#{_api_base_url}/#{Fintecture::Api::Endpoints::Ais::CONNECT}"

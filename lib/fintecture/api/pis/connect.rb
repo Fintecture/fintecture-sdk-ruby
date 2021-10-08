@@ -15,7 +15,7 @@ module Fintecture
         # ------------ PUBLIC METHOD ------------
         def generate(client, payload, state, redirect_uri, origin_uri)
           @client = client
-          
+
           # Build the request payload
           payload = _build_payload(payload)
 

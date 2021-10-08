@@ -11,7 +11,6 @@ require 'fintecture/utils/constants'
 module Fintecture
   module Ais
     class AccountHolders
-
       class << self
         # ------------ PUBLIC METHOD ------------
         def get(client, customer_id, remove_nulls)
@@ -28,12 +27,11 @@ module Fintecture
           # Get the url request
           url = _endpoint customer_id
 
-          
           # Build uri params
-          query_string = ""
-          if remove_nulls 
+          query_string = ''
+          if remove_nulls
             params = {}
-            params['remove_nulls'] = remove_nulls if remove_nulls            
+            params['remove_nulls'] = remove_nulls if remove_nulls
             query_string = "?#{params.map { |key, value| "#{key}=#{value}" }.join('&')}"
           end
 
@@ -47,10 +45,8 @@ module Fintecture
           )
         end
 
-
-
         # ------------ API ENDPOINT ------------
-        def _endpoint (customer_id)
+        def _endpoint(customer_id)
           "#{_api_base_url}/#{Fintecture::Api::Endpoints::Ais::ACCOUNTHOLDERS}/#{customer_id}/accountholders"
         end
 

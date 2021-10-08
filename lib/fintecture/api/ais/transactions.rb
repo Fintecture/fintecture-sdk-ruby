@@ -28,13 +28,13 @@ module Fintecture
           url = _endpoint customer_id, account_id
 
           # Build uri params
-          query_string = ""
+          query_string = ''
           if remove_nulls || convert_dates || filters
             params = {}
             params['remove_nulls'] = remove_nulls if remove_nulls
             params['convert_dates'] = convert_dates if convert_dates
-            filters.each{|key, value| params[key] = value } if filters
-            
+            filters.each { |key, value| params[key] = value } if filters
+
             query_string = "?#{params.map { |key, value| "#{key}=#{value}" }.join('&')}"
           end
 
@@ -48,10 +48,8 @@ module Fintecture
           )
         end
 
-
-
         # ------------ API ENDPOINT ------------
-        def _endpoint (customer_id, account_id)
+        def _endpoint(customer_id, account_id)
           "#{_api_base_url}/#{Fintecture::Api::Endpoints::Ais::TRANSACTIONS}/#{customer_id}/accounts/#{account_id}/transactions"
         end
 

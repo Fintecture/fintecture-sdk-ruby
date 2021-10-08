@@ -28,24 +28,23 @@ module Fintecture
           url = _endpoint provider_id, polling_id
 
           # Build uri params
-          query_string = ""
+          query_string = ''
 
           params = {}
-          params['response_type'] = "code" if app_id_auth
-          params['model'] = "decoupled"
-    
+          params['response_type'] = 'code' if app_id_auth
+          params['model'] = 'decoupled'
+
           query_string = "?#{params.map { |key, value| "#{key}=#{value}" }.join('&')}"
 
           # Build additional headers
           additional_headers = {}
           additional_headers['app_id'] = @client.app_id if app_id_auth
 
-
           # Do connect request
           Fintecture::Faraday::Authentication::Connection.get(
             url: url + query_string,
             client: @client,
-            custom_content_type:  'application/json',
+            custom_content_type: 'application/json',
             bearer: "Bearer #{@client.token}",
             secure_headers: true,
             additional_headers: additional_headers,
@@ -53,10 +52,8 @@ module Fintecture
           )
         end
 
-
-
         # ------------ API ENDPOINT ------------
-        def _endpoint (provider_id, polling_id)
+        def _endpoint(provider_id, polling_id)
           "#{_api_base_url}/#{Fintecture::Api::Endpoints::Ais::AUTHORIZE}/#{provider_id}/authorize/decoupled/#{polling_id}"
         end
 

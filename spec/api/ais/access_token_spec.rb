@@ -3,17 +3,16 @@
 require 'json'
 
 config = JSON.parse(File.read('./spec/api/ais/config.json'))
-customer_id = config["customer_id"]
-code = config["code"]
+customer_id = config['customer_id']
+code = config['code']
 
 RSpec.describe Fintecture::Authentication do
   ais_client = Fintecture::AisClient.new({
-    environment: config['environment'],
-    app_id: config['app_id'],
-    app_secret: config['app_secret'],
-    private_key: config['private_key']
-  })
-
+                                           environment: config['environment'],
+                                           app_id: config['app_id'],
+                                           app_secret: config['app_secret'],
+                                           private_key: config['private_key']
+                                         })
 
   # ------------ TESTS ------------
   it 'POST /accesstoken' do

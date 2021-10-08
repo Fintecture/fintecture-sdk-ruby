@@ -36,7 +36,7 @@ module Fintecture
       JSON.parse res.body
     end
 
-    def generate_token (auth_code)
+    def generate_token(auth_code)
       res = Fintecture::Authentication.get_access_token self, auth_code
       body = JSON.parse res.body
       @token = body['access_token']
@@ -46,13 +46,14 @@ module Fintecture
       body
     end
 
-    def generate_refresh_token (refresh_token = nil)
+    def generate_refresh_token(refresh_token = nil)
       res = Fintecture::Authentication.refresh_token self, (refresh_token || @refresh_token)
       body = JSON.parse res.body
       @token = body['access_token']
 
       body
     end
+
     def accounts(customer_id:, account_id: nil, remove_nulls: nil, withBalances: nil)
       res = Fintecture::Ais::Accounts.get self, customer_id, account_id, remove_nulls, withBalances
 
@@ -77,13 +78,14 @@ module Fintecture
       JSON.parse res.body
     end
 
-    def authorize(app_id_auth: false, provider_id:, redirect_uri:, state: nil, x_psu_id: nil, x_psu_ip_address: nil)
-      res = Fintecture::Ais::Authorize.get self, app_id_auth, provider_id, redirect_uri, state, x_psu_id, x_psu_ip_address
+    def authorize(provider_id:, redirect_uri:, app_id_auth: false, state: nil, x_psu_id: nil, x_psu_ip_address: nil)
+      res = Fintecture::Ais::Authorize.get self, app_id_auth, provider_id, redirect_uri, state, x_psu_id,
+                                           x_psu_ip_address
 
       JSON.parse res.body
     end
 
-    def authorize_decoupled(app_id_auth: false, provider_id:, polling_id:)
+    def authorize_decoupled(provider_id:, polling_id:, app_id_auth: false)
       res = Fintecture::Ais::AuthorizeDecoupled.get self, app_id_auth, provider_id, polling_id
 
       JSON.parse res.body

@@ -28,12 +28,12 @@ module Fintecture
           url = _endpoint customer_id, account_id
 
           # Build uri params
-          query_string = ""
+          query_string = ''
           if remove_nulls || withBalances
             params = {}
             params['remove_nulls'] = remove_nulls if remove_nulls
             params['withBalances'] = withBalances if withBalances
-      
+
             query_string = "?#{params.map { |key, value| "#{key}=#{value}" }.join('&')}"
           end
 
@@ -47,10 +47,8 @@ module Fintecture
           )
         end
 
-
-
         # ------------ API ENDPOINT ------------
-        def _endpoint (customer_id, account_id)
+        def _endpoint(customer_id, account_id)
           "#{_api_base_url}/#{Fintecture::Api::Endpoints::Ais::ACCOUNTS}/#{customer_id}/accounts/#{account_id || ''}"
         end
 

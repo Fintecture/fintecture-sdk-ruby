@@ -7,11 +7,11 @@ config = JSON.parse(File.read('./spec/api/pis/config.json'))
 
 RSpec.describe Fintecture::Pis::RequestToPay do
   pis_client = Fintecture::PisClient.new({
-    environment: config['environment'],
-    app_id: config['app_id'],
-    app_secret: config['app_secret'],
-    private_key: config['private_key']
-  })
+                                           environment: config['environment'],
+                                           app_id: config['app_id'],
+                                           app_secret: config['app_secret'],
+                                           private_key: config['private_key']
+                                         })
 
   payload_request_to_pay = {
     meta: {

@@ -28,14 +28,14 @@ module Fintecture
           url = _endpoint provider_id
 
           # Build uri params
-          query_string = ""
+          query_string = ''
 
           params = {}
-          params['response_type'] = "code" if app_id_auth
+          params['response_type'] = 'code' if app_id_auth
           params['redirect_uri'] = redirect_uri if redirect_uri
           params['state'] = state if state
-          params['model'] = "redirect"
-    
+          params['model'] = 'redirect'
+
           query_string = "?#{params.map { |key, value| "#{key}=#{value}" }.join('&')}"
 
           # Build additional headers
@@ -48,7 +48,7 @@ module Fintecture
           Fintecture::Faraday::Authentication::Connection.get(
             url: url + query_string,
             client: @client,
-            custom_content_type:  'application/json',
+            custom_content_type: 'application/json',
             bearer: "Bearer #{@client.token}",
             secure_headers: true,
             additional_headers: additional_headers,
@@ -56,10 +56,8 @@ module Fintecture
           )
         end
 
-
-
         # ------------ API ENDPOINT ------------
-        def _endpoint (provider_id)
+        def _endpoint(provider_id)
           "#{_api_base_url}/#{Fintecture::Api::Endpoints::Ais::AUTHORIZE}/#{provider_id}/authorize"
         end
 

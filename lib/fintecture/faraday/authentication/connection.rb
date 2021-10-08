@@ -38,7 +38,7 @@ module Fintecture
             res = conn.get do |req|
               req.options.params_encoder = Faraday::DisabledEncoder
               req.headers = req_headers(custom_content_type, bearer, secure_headers, additional_headers, disableAuthorization,
-                                         method: 'get', url: url)
+                                        method: 'get', url: url)
               req.body = req_body
             end
 
@@ -63,6 +63,7 @@ module Fintecture
             if !additional_headers.nil? && !additional_headers.is_a?(Hash)
               raise Fintecture::ValidationException, 'additional_headers must be an object'
             end
+
             client_token = Base64.strict_encode64("#{@client.app_id}:#{@client.app_secret}")
 
             headers = {
@@ -70,15 +71,12 @@ module Fintecture
               'User-Agent' => "Fintecture Ruby SDK v #{Fintecture::VERSION}",
               'Content-Type' => custom_content_type || 'application/x-www-form-urlencoded'
             }
-            headers['Authorization'] =  bearer || "Basic #{client_token}" if !disableAuthorization
+            headers['Authorization'] = bearer || "Basic #{client_token}" unless disableAuthorization
             headers = headers.merge(additional_headers) unless additional_headers.nil?
-            headers = headers.merge(secure_headers ? req_secure_headers( body: body, url: url, method: method) : {})
-            
-            headers
+            headers.merge(secure_headers ? req_secure_headers(body: body, url: url, method: method) : {})
           end
 
-          def req_secure_headers( body: {}, url: '', method: '')
-
+          def req_secure_headers(body: {}, url: '', method: '')
             payload = (body.instance_of?(String) ? body : body.to_s)
             path_name = URI(url).path
             search_params = URI(url).query
@@ -93,8 +91,6 @@ module Fintecture
               'X-Request-ID' => x_request_id
             }.merge(payload ? digest : {})
 
-
-
             headers['Signature'] =
               Fintecture::Utils::Crypto.create_signature_header(
                 { '(request-target)' => request_target }.merge(headers), @client
@@ -108,7 +104,7 @@ module Fintecture
 
           def as_json(element)
             return JSON(element.to_json) if element.is_a? Hash
-  
+
             begin
               element.as_json
             rescue NoMethodError
@@ -116,7 +112,6 @@ module Fintecture
                     "invalid parameter format, the parameter should be a Hash or an Object Model instead a #{element.class.name}"
             end
           end
-
         end
       end
     end
@@ -129,19 +124,19 @@ module Fintecture
 
       def self.encode(params)
         return nil if params.nil?
+
         newParams = {}
-        params.each { |key, value| 
-            if value.class == Hash
-                value.each { |subkey, subvalue| 
-                    newParams["#{key}[#{subkey}]"] = subvalue    
-                }
-            else 
-                newParams[key] = value
+        params.each do |key, value|
+          if value.instance_of?(Hash)
+            value.each do |subkey, subvalue|
+              newParams["#{key}[#{subkey}]"] = subvalue
             end
-        }
-        
-        query_string = newParams.map { |key, value| "#{key}=#{value}" }.join('&').to_s
-        query_string
+          else
+            newParams[key] = value
+          end
+        end
+
+        newParams.map { |key, value| "#{key}=#{value}" }.join('&').to_s
       end
 
       class << self

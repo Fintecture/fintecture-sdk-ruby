@@ -11,7 +11,6 @@ require 'fintecture/utils/constants'
 module Fintecture
   module Ais
     class DeleteCustomer
-
       class << self
         # ------------ PUBLIC METHOD ------------
         def delete(client, customer_id)
@@ -28,11 +27,9 @@ module Fintecture
           # Get the url request
           url = _endpoint customer_id
 
-
-          
           # Do connect request
           Fintecture::Faraday::Authentication::Connection.delete(
-            url: url ,
+            url: url,
             client: @client,
             custom_content_type: 'application/json',
             bearer: "Bearer #{@client.token}",
@@ -40,10 +37,8 @@ module Fintecture
           )
         end
 
-
-
         # ------------ API ENDPOINT ------------
-        def _endpoint (customer_id)
+        def _endpoint(customer_id)
           "#{_api_base_url}/#{Fintecture::Api::Endpoints::Ais::CUSTOMER}/#{customer_id}"
         end
 

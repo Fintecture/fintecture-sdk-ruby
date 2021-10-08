@@ -55,7 +55,8 @@ module Fintecture
     end
 
     def initiate(payload, provider_id, redirect_uri, state = nil)
-      res = Fintecture::Pis::Initiate.generate self, Marshal.load(Marshal.dump(payload)), provider_id, redirect_uri, state
+      res = Fintecture::Pis::Initiate.generate self, Marshal.load(Marshal.dump(payload)), provider_id, redirect_uri,
+                                               state
 
       JSON.parse res.body
     end
@@ -95,7 +96,5 @@ module Fintecture
 
       JSON.parse res.body
     end
-
-
   end
 end

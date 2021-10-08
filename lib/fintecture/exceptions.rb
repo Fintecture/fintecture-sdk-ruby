@@ -40,9 +40,8 @@ module Fintecture
         end
         error_string += "\n\n"
 
-        
         {
-          type: "Fintecture api",
+          type: 'Fintecture api',
           status: status,
           errors: errors_array,
           error_string: error_string
@@ -62,16 +61,12 @@ module Fintecture
         error_string += "\n\n"
 
         {
-          type: "Fintecture api",
+          type: 'Fintecture api',
           status: status,
           errors: [error],
           error_string: error_string
         }.to_json
-        
       end
-
-
-
     end
   end
 end
