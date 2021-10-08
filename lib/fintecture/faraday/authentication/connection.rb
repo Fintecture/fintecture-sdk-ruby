@@ -102,16 +102,6 @@ module Fintecture
             { 'Digest' => "SHA-256=#{Fintecture::Utils::Crypto.hash_base64(payload)}" }
           end
 
-          def as_json(element)
-            return JSON(element.to_json) if element.is_a? Hash
-
-            begin
-              element.as_json
-            rescue NoMethodError
-              raise Fintecture::ValidationException,
-                    "invalid parameter format, the parameter should be a Hash or an Object Model instead a #{element.class.name}"
-            end
-          end
         end
       end
     end
