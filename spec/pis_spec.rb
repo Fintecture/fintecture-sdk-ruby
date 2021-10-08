@@ -109,7 +109,7 @@ payment_attrs_connect = {
       zip: '75000', # Mandatory 
       country: 'fr' # Mandatory 
   },
-  redirect_uri: 'http://www.google.fr', # Optional 
+  redirect_uri: 'https://www.google.fr', # Optional 
   origin_uri: 'http://example.com/checkout?session=123', # Optional 
   state: 'somestate' # Mandatory 
 }

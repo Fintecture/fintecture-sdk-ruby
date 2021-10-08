@@ -8,19 +8,21 @@ module Fintecture
     class << self
       
 
-
-
       # ------------ PUBLIC METHODS ------------
       # Connect
       def get_connect(access_token = nil, payment_attrs = nil)
+        payment_attrs = as_json payment_attrs
+
         # Build the request payload
-        payload = build_payload_connect(as_json payment_attrs)
+        payload = build_payload_connect(payment_attrs)
         # Do the _get_connect_request request
         _get_connect_request access_token, payload, payment_attrs
       end
 
       # Request_to_pay
       def request_to_pay(access_token = nil, payment_attrs = nil)
+        payment_attrs = as_json payment_attrs
+
         # Build the request payload
         payload = build_payload_request_to_pay(as_json payment_attrs)
         # Do the _request_to_pay_request request
@@ -50,7 +52,7 @@ module Fintecture
 
         # Get the url request
         url = connect_endpoint
-        
+
         # Build uri params
         params = {}
         params['state'] = payment_attrs['state']
@@ -74,7 +76,7 @@ module Fintecture
         url = request_to_pay_endpoint
 
         additional_headers = {}
-        additional_headers['x-language'] = payment_attrs[:x_language]
+        additional_headers['x-language'] = payment_attrs['x_language']
 
         # Do connect request
         Fintecture::Faraday::Authentication::Connection.post(
