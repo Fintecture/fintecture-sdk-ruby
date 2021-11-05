@@ -11,7 +11,7 @@ module Fintecture
       FINTECTURE_API_URL = {
         local: 'http://localhost:3030',
         test: 'https://api-sandbox-test.fintecture.com',
-        sandbox: 'https://api-sandbox.fintecture.com',
+        sandbox: 'https://api-sandbox-test.fintecture.com',
         production: 'https://api.fintecture.com'
       }
 

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    fintecture (0.3.0)
+    fintecture (0.3.1)
       faraday
 
 GEM
