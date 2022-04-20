@@ -150,12 +150,15 @@ Documentation => https://docs.fintecture.com/v2/#get-get-get-settlements
  - An exemple of response in the right column in "Request Body" section
 
 ```ruby
-# settlements (settlement_id = nil)
+# settlements (settlement_id = nil, include_payments = false)
 #       settlement_id: string
+#       include_payments: boolean
 
 response = pis_client.settlements
 OR
 response = pis_client.settlements "127335fdeb073e0eb2313ba0bd71ad44"
+OR
+response = pis_client.settlements "127335fdeb073e0eb2313ba0bd71ad44", true
 ```
 
 ## AIS     

@@ -10,21 +10,23 @@ module Fintecture
     class Settlements
       class << self
         # ------------ PUBLIC METHOD ------------
-        def get(client, settlement_id)
+        def get(client, settlement_id, include_payments)
           @client = client
 
           # Do the get_payments request
-          _request settlement_id
+          _request settlement_id, include_payments
         end
 
         private
 
         # ------------ REQUEST ------------
-        def _request(settlement_id)
+        def _request(settlement_id, include_payments)
           url = _endpoint
+          url += "/#{settlement_id}" if settlement_id
+          url += "?include=payments" if include_payments
 
           Fintecture::Faraday::Authentication::Connection.get(
-            url: "#{url}/#{settlement_id}",
+            url: url,
             client: @client,
             custom_content_type: 'application/json',
             bearer: "Bearer #{@client.token}",

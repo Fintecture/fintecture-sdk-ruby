@@ -73,8 +73,8 @@ module Fintecture
       JSON.parse res.body
     end
 
-    def settlements(settlement_id = nil)
-      res = Fintecture::Pis::Settlements.get self, settlement_id
+    def settlements(settlement_id = nil, include_payments = false)
+      res = Fintecture::Pis::Settlements.get self, settlement_id, include_payments
 
       JSON.parse res.body
     end
