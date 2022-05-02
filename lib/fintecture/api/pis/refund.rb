@@ -9,11 +9,11 @@ module Fintecture
     class Refund
       class << self
         # ------------ PUBLIC METHOD ------------
-        def generate(client, session_id, amount)
+        def generate(client, session_id, amount, user_id)
           @client = client
 
           # Build the request payload
-          payload = _build_payload session_id, amount
+          payload = _build_payload session_id, amount, user_id
           # Do the _request request
           _request payload
         end
@@ -37,11 +37,12 @@ module Fintecture
         end
 
         # ------------ BUILD PAYLOAD ------------
-        def _build_payload(session_id, amount)
+        def _build_payload(session_id, amount, user_id)
           # Return the payload
           {
             meta: {
-              session_id: session_id
+              session_id: session_id,
+              user_id: user_id
             },
             data: {
               attributes: {
@@ -60,7 +61,6 @@ module Fintecture
         def _api_base_url
           Fintecture::Api::BaseUrl::FINTECTURE_API_URL[@client.environment.to_sym]
         end
-
       end
     end
   end
