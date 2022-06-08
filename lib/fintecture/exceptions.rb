@@ -34,8 +34,9 @@ module Fintecture
         error_string += "\n code: #{code}"
         error_string += "\n id : #{log_id}"
 
-        errors_array.each do |error|
-          formated_error = error.map { |key, value| "   #{key}: #{value}" }.join("\n")
+        errors_array.compact.each do |error|
+          formated_error = error
+          formated_error = error.map { |key, value| "   #{key}: #{value}" }.join("\n") if error.is_a?(Hash)
           error_string += "\n\n#{formated_error}"
         end
         error_string += "\n\n"
@@ -55,7 +56,9 @@ module Fintecture
         error_string = "\nFintecture server errors : "
         error_string += "\n status: #{status} "
 
-        formated_error = error.map { |key, value| "   #{key}: #{value}" }.join("\n")
+        formated_error = error
+        formated_error = error.map { |key, value| "   #{key}: #{value}" }.join("\n") if error.is_a?(Hash)
+
         error_string += "\n\n#{formated_error}"
 
         error_string += "\n\n"
