@@ -67,8 +67,8 @@ module Fintecture
       JSON.parse res.body
     end
 
-    def refund(session_id, amount = nil)
-      res = Fintecture::Pis::Refund.generate self, session_id, amount
+    def refund(session_id, amount = nil, user_id = nil)
+      res = Fintecture::Pis::Refund.generate self, session_id, amount, user_id
 
       JSON.parse res.body
     end
