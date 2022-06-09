@@ -121,11 +121,12 @@ Documentation => https://docs.fintecture.com/v2/#post-post-post-refund
  - An exemple of response in the right column in "Request Body" section
 
 ```ruby
-# refund (session_id, amount = nil)
+# refund (session_id, amount = nil, user_id = nil))
 #       session_id: string
 #       amount: number
+#       user_id: string
 
-response = pis_client.refund "7f47d3675f5d4964bc416b43af63b06e", 5.75
+response = pis_client.refund "7f47d3675f5d4964bc416b43af63b06e", 5.75, "8886aaa4-527d-4253-8951-a07d8bf4cf52"
 ```
 If the amount is not specified, refund the total
 
