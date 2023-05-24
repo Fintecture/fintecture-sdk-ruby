@@ -10,21 +10,27 @@ module Fintecture
     class Payments
       class << self
         # ------------ PUBLIC METHOD ------------
-        def get(client, session_id)
+        def get(client, session_id, options = {})
           @client = client
 
           # Do the get_payments request
-          _request session_id
+          _request session_id, options
         end
 
         private
 
         # ------------ REQUEST ------------
-        def _request(session_id)
+        def _request(session_id, options)
           url = _endpoint
 
+          # Build uri params
+          params = {}
+          params['with_virtualbeneficiary'] = 'true' if options[:with_virtualbeneficiary]
+
+          query_string = "?#{params.map { |key, value| "#{key}=#{value}" }.join('&')}"
+
           Fintecture::Faraday::Authentication::Connection.get(
-            url: "#{url}/#{session_id}",
+            url: "#{url}/#{session_id}" + query_string,
             client: @client,
             custom_content_type: 'application/json',
             bearer: "Bearer #{@client.token}",

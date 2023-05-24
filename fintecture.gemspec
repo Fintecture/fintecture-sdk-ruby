@@ -8,10 +8,10 @@ Gem::Specification.new do |spec|
   spec.name          = 'fintecture'
   spec.version       = Fintecture::VERSION
   spec.authors       = ['Fintecture']
-  spec.email         = ['alvaro.fernandez@nazaries.com']
+  spec.email         = ['support@fintecture.com']
 
-  spec.summary       = 'Short summary'
-  spec.description   = 'Longer summary'
+  spec.summary       = 'SDK to allow easy and secure access to bank account data and payment initiation with Fintecture.'
+  spec.description   = 'Our APIs allow easy and secure access to bank account data and payment initiation. The account data accessible are account holder\'s personal information, account balances, transaction history and much more. The available payment methods depend on the banks implementation but typically are domestic transfers, SEPA credit transfer, instant SEPA credit transfer, fast payment scheme, and SWIFT international payments.'
   spec.homepage      = 'http://fintecture.com'
   spec.license       = 'GPL-3.0'
 
