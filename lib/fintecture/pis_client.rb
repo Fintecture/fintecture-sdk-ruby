@@ -42,8 +42,8 @@ module Fintecture
       body
     end
 
-    def connect(payload, state, redirect_uri = nil, origin_uri = nil)
-      res = Fintecture::Pis::Connect.generate self, Marshal.load(Marshal.dump(payload)), state, redirect_uri, origin_uri
+    def connect(payload, state, redirect_uri = nil, origin_uri = nil, **options)
+      res = Fintecture::Pis::Connect.generate self, Marshal.load(Marshal.dump(payload)), state, redirect_uri, origin_uri, options
 
       JSON.parse res.body
     end
@@ -61,8 +61,8 @@ module Fintecture
       JSON.parse res.body
     end
 
-    def payments(session_id = nil)
-      res = Fintecture::Pis::Payments.get self, session_id
+    def payments(session_id = nil, **options)
+      res = Fintecture::Pis::Payments.get self, session_id, options
 
       JSON.parse res.body
     end

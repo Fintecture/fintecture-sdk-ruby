@@ -23,9 +23,9 @@ Or install it yourself as:
 
 Get started by subscribing to a free developer account. Join today to get access to our sandbox by registering on the [developer console](https://console.fintecture.com) by creating your first sets of API Keys. When creating an account, specify you are an ECOMMERCE. When you’re ready to deploy to production, just go through the Activation Form in your console. Once the Fintecture Team activates your account, you’ll be ready to start receiving real bank transfers directly on the bank account specified during activation.
 
-By default `sandbox` is the initial environment, but you can change to sandbox by doing
+By default `sandbox` is the initial environment, but you can change to production when initializing your PIS or AIS client:
 
-Initialize your PIS client 
+### Initialize your PIS client 
 
 ```ruby
 pis_client = Fintecture::PisClient.new({
@@ -38,7 +38,7 @@ pis_client = Fintecture::PisClient.new({
 
 
 
-Initialize your AIS client 
+### Initialize your AIS client 
 
 ```ruby
 ais_client = Fintecture::AisClient.new({
@@ -51,7 +51,8 @@ ais_client = Fintecture::AisClient.new({
 
 
 
-## PIS     
+## PIS
+
 PIS client properties
 ```ruby
 pis_client.app_id
@@ -62,63 +63,55 @@ pis_client.token
 pis_client.token_expires_in
 ```
 
-#### Access token
+### Access token
 This method return the token and store it in the client for future requests
 ```ruby
 pis_client.generate_token
 ```
 
 
-#### POST /connect
-Documentation => https://docs.fintecture.com/v2/#post-post-post-connect
- - An example of the JSON payload in the right column in "Request Body" section
- - An exemple of response in the right column in "Request Body" section
- - The definitions of each field in the "Body Parameters" section
+### POST /connect
+
+Creates a connect session for a PSU to initiate a payment.
+
+Documentation:
+- https://doc.fintecture.com/reference/createpisv2connect
 
 ```ruby
-# connect (payload, state, redirect_uri = nil, origin_uri = nil)
+# connect (payload, state, redirect_uri = nil, origin_uri = nil, with_virtualbeneficiary: false)
 #       payload: {}
 #       state: string
 #       redirect_uri: string
 #       origin_uri: string
 
-response = pis_client.connect payload, "my-state", "https://www.my-redirect-uri.fr", "https://www.my-origine-uri.fr"
+response = pis_client.connect payload, "my-state", "https://www.my-redirect-uri.fr", "https://www.my-origine-uri.fr", with_virtualbeneficiary: true
 ```
 
+### GET /payments
 
-#### POST /initiate
-Documentation => https://docs.fintecture.com/v2/#post-post-post-initiate
- - An example of the JSON payload in the right column in "Request Body" section
- - An exemple of response in the right column in "Request Body" section
- - The definitions of each field in the "Body Parameters" section
+Get the details of all transfers or of a specific transfer, with virtual beneficiary information if required.
 
-```ruby
-# initiate (payload, provider_id, redirect_uri, state = nil)
-#       payload: {}
-#       provider_id: string
-#       redirect_uri: string
-#       state: string
-
-response = pis_client.initiate payload, "cmcifrpp", "https://www.my-redirect-uri.fr", "my-state"
-```
-
-#### GET /payments
-Documentation => https://docs.fintecture.com/v2/#get-get-get-payments
- - An exemple of response in the right column in "Request Body" section
+Documentation:
+- Get all payments: https://doc.fintecture.com/reference/getpisv2payments
+- Get a specific payment: https://doc.fintecture.com/reference/getpaymentsession
 
 ```ruby
-# payments (session_id = nil)
+# payments (session_id = nil, with_virtualbeneficiary: false)
 #       session_id: string
 
-response = pis_client.payments "7f47d3675f5d4964bc416b43af63b06e"
-OR
 response = pis_client.payments 
+# OR
+response = pis_client.payments "7f47d3675f5d4964bc416b43af63b06e"
+# OR
+response = pis_client.payments "7f47d3675f5d4964bc416b43af63b06e", with_virtualbeneficiary: true
 ```
-This endpoint returns the details of all transfers or of a specific transfer
 
-#### POST /refund
-Documentation => https://docs.fintecture.com/v2/#post-post-post-refund
- - An exemple of response in the right column in "Request Body" section
+### POST /refund
+
+Initiates a refund. If the amount is not specified, refunds the total.
+
+Documentation:
+- https://doc.fintecture.com/reference/createpisv2refund
 
 ```ruby
 # refund (session_id, amount = nil, user_id = nil))
@@ -128,14 +121,13 @@ Documentation => https://docs.fintecture.com/v2/#post-post-post-refund
 
 response = pis_client.refund "7f47d3675f5d4964bc416b43af63b06e", 5.75, "8886aaa4-527d-4253-8951-a07d8bf4cf52"
 ```
-If the amount is not specified, refund the total
 
-#### POST /request-to-pay
-Documentation => https://docs.fintecture.com/v2/#post-post-post-request-to-pay
- - An example of the JSON payload in the right column in "Request Body" section
- - An exemple of response in the right column in "Request Body" section
- - The definitions of each field in the "Body Parameters" section
- - The definition of x_language field in the "Header Parameters" section
+### POST /request-to-pay
+
+Creates a request to pay that merchant can then share by link, mail or sms to a customer for asynchronous payment.
+
+Documentation:
+- https://doc.fintecture.com/reference/createpisv2requesttopay
 
 ```ruby
 # refund (payload, x_language, redirect_uri = nil)
@@ -146,9 +138,13 @@ Documentation => https://docs.fintecture.com/v2/#post-post-post-request-to-pay
 response = pis_client.request_to_pay payload, 'fr', "https://www.my-redirect-uri.fr"
 ```
 
-#### GET /settlements
-Documentation => https://docs.fintecture.com/v2/#get-get-get-settlements
- - An exemple of response in the right column in "Request Body" section
+### GET /settlements
+
+Get the details of all settlements or of a specific settlement.
+
+Documentation:
+- Get all settlements: https://doc.fintecture.com/reference/getpisv2settlements
+- Get a specific settlement: https://doc.fintecture.com/reference/getpisv2settlement
 
 ```ruby
 # settlements (settlement_id = nil, include_payments = false)
@@ -173,9 +169,12 @@ ais_client.token
 ais_client.refresh_token
 ais_client.token_expires_in
 ``` 
-#### GET /connect
-Documentation => https://docs.fintecture.com/v2/#get-get-get-connect
- - An exemple of response in the right column in "Request Body" section
+### GET /connect
+
+Get a connect session for a PSU to create a connection that will enable access to AIS features.
+
+Documentation:
+- https://doc.fintecture.com/reference/getaisv2connect
 
 ```ruby
 # connect (state, redirect_uri, scope = nil)
@@ -191,19 +190,25 @@ customer_id = "fa51058b5f8306f1e048f1adda5488a9"
 code = "f66ec660b0bbd2797bf6847fb4b98454"
 ```
 
-#### Access token
-Documentation => https://docs.fintecture.com/v2/#post-post-post-oauth-accesstoken
+### Access token
 
-This method return the token and store it in the client for future requests
+Returns the token and store it in the client for future requests.
+
+Documentation:
+- https://doc.fintecture.com/reference/createaccesstoken
+
 ```ruby
 ais_client.generate_token code
 ```
 
-#### Refresh token
-Documentation => https://docs.fintecture.com/v2/#post-post-post-oauth-refreshtoken
+### Refresh token
 
-This method return the token and store it in the client for future requests
-If you do not pass the refreshtoken as a parameter, the client refreshtoken will be used
+Returns the token and store it in the client for future requests.
+If you do not pass the refreshtoken as a parameter, the client refreshtoken will be used.
+
+Documentation:
+- https://doc.fintecture.com/reference/createrefreshtoken
+
 ```ruby
 # generate_refresh_token (refresh_token = nil)
 #       refresh_token: string
@@ -211,10 +216,12 @@ If you do not pass the refreshtoken as a parameter, the client refreshtoken will
 ais_client.generate_refresh_token
 ```
 
-#### GET /authorize
-Documentation => https://docs.fintecture.com/v2/#get-get-get-authorize
- - An exemple of response in the right column in "Request Body" section
- - The definition of "x_psu_id" and "x_psu_ip_address" fields in the "Header Parameters" section
+### GET /authorize
+
+Authenticates your customer to their Bank for AIS access
+
+Documentation:
+- https://doc.fintecture.com/reference/getaisv1providerauthorization
 
 ```ruby
 # authorize (app_id_auth: false, provider_id:, redirect_uri:, state: nil, x_psu_id: nil, x_psu_ip_address: nil)
@@ -228,22 +235,12 @@ Documentation => https://docs.fintecture.com/v2/#get-get-get-authorize
 response = ais_client.authorize app_id_auth: false, provider_id: "agfbfr", redirect_uri: "https://www.google.fr", state: "ok", x_psu_id: "123456", x_psu_ip_address: "192.168.1.1"
 ```
 
-#### GET /authorize/decoupled
-Documentation => https://docs.fintecture.com/v2/#get-get-get-authorize-decoupled
- - An exemple of response in the right column in "Request Body" section
+### GET /accounts
 
-```ruby
-# authorize_decoupled (app_id_auth: false, provider_id:, polling_id:)
-#       app_id_auth: boolean
-#       provider_id: string
-#       polling_id: string
+Get all accounts linked to a specific AIS connection.
 
-response = ais_client.authorize_decoupled app_id_auth: false, provider_id: "agfbfr", polling_id: "1234"
-```
-
-#### GET /accounts
-Documentation => https://docs.fintecture.com/v2/#get-get-get-accounts
- - An exemple of response in the right column in "Request Body" section
+Documentation:
+- https://doc.fintecture.com/reference/getaisv1customeraccounts
 
 ```ruby
 # accounts (customer_id:, account_id: nil, remove_nulls: nil, withBalances: nil)
@@ -255,9 +252,12 @@ Documentation => https://docs.fintecture.com/v2/#get-get-get-accounts
 response = ais_client.accounts customer_id: customer_id, account_id: nil, remove_nulls: nil, withBalances: nil
 ```
 
-#### GET /transactions
-Documentation => https://docs.fintecture.com/v2/#get-get-get-transactions
- - An exemple of response in the right column in "Request Body" section
+### GET /transactions
+
+Get all transactions linked to a specific AIS connection for a specific account.
+
+Documentation:
+- https://doc.fintecture.com/reference/getaisv1customeraccounttransactions
 
 ```ruby
 # transactions (customer_id:, account_id:, remove_nulls: nil, convert_dates: nil, filters: nil)
@@ -274,9 +274,12 @@ transactions_filters = {
 response = ais_client.transactions customer_id: customer_id, account_id: "b71722204d1a3f5ecd895", remove_nulls: true, convert_dates: true, filters: transactions_filters
 ```
 
-#### GET /accountholders
-Documentation => https://docs.fintecture.com/v2/#get-get-get-accountholders
- - An exemple of response in the right column in "Request Body" section
+### GET /accountholders
+
+Retrieves all personal information of the client such as name, address and contact details for all the beneficiary owners.
+
+Documentation:
+- https://doc.fintecture.com/reference/getaisv1customeraccountholders
 
 ```ruby
 # account_holders (customer_id:, remove_nulls: nil)
@@ -286,9 +289,12 @@ Documentation => https://docs.fintecture.com/v2/#get-get-get-accountholders
 response = ais_client.account_holders customer_id: customer_id, remove_nulls: true
 ```
 
-#### DELETE /customer
-Documentation => https://docs.fintecture.com/v2/#delete-delete-delete-customer
- - An exemple of response in the right column in "Request Body" section
+### DELETE /customer
+
+Deletes all active access tokens and all PSU data linked to requested connection.
+
+Documentation:
+- https://doc.fintecture.com/reference/deleteaisv1customer
 
 ```ruby
 # account_holders (customer_id:)
@@ -299,9 +305,10 @@ response = ais_client.delete_customer customer_id: customer_id
 ## RESSOURCES
 Use the PIS client to get ressources. The "generate_token" step is not needed for this calls
 
-#### GET /providers
-Documentation => https://docs.fintecture.com/v2/#get-get-get-providers
- - An exemple of response in the right column in "Request Body" section
+### GET /providers
+
+Documentation:
+- https://doc.fintecture.com/reference/getresv1providers
 
 ```ruby
 # providers (provider_id: nil, paramsProviders: nil)
@@ -322,25 +329,15 @@ paramsProviders = {
 response = pis_client.providers provider_id: 'agfbfr', paramsProviders: paramsProviders
 ```
 
-#### GET /applications
-Documentation => https://docs.fintecture.com/v2/#get-get-get-applications
- - An exemple of response in the right column in "Request Body" section
+### GET /applications
+
+Documentation:
+- https://doc.fintecture.com/reference/getresv1applications
 
 ```ruby
 # applications ()
 
 response = pis_client.applications
-```
-
-#### GET /testaccounts
-Documentation => https://docs.fintecture.com/v2/#get-get-get-testaccounts
- - An exemple of response in the right column in "Request Body" section
-
-```ruby
-# test_accounts (provider_id = nil)
-#       provider_id: string
-
-response = pis_client.test_accounts 'agfbfr'
 ```
 
 ## API Errors handling

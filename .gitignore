@@ -9,6 +9,7 @@
 
 # rspec failure tracking
 .rspec_status
+.ruby_version
 .idea/
 lib/example.rb
 

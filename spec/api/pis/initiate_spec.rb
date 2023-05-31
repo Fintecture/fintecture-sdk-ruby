@@ -16,7 +16,7 @@ RSpec.describe Fintecture::Pis::Initiate do
   payload_initiate = {
     "meta": {
       "psu_name": 'Bob McCheese',
-      "psu_email": 'sylvain.sanfilippo@fintecture.com',
+      "psu_email": 'xavier.laumonier@fintecture.com',
       "psu_phone": '09743593535',
       "psu_address": {
         "street": 'route de la france',

@@ -16,7 +16,7 @@ RSpec.describe Fintecture::Pis::RequestToPay do
   payload_request_to_pay = {
     meta: {
       psu_name: 'John Doe', # Mandatory
-      psu_email: 'sylvain.sanfilippo@fintecture.com', # Mandatory
+      psu_email: 'xavier.laumonier@fintecture.com', # Mandatory
       psu_phone: '666777888', # Mandatory
       psu_phone_prefix: '+33', # Optionnal
       psu_address: {
@@ -27,13 +27,13 @@ RSpec.describe Fintecture::Pis::RequestToPay do
         country: 'fr' # Mandatory
       },
       expirary: 86_400, # Optional
-      cc: 'sylvain.sanfilippo@fintecture.com', # Optional
-      bcc: 'sylvain.sanfilippo@fintecture.com' # Optional
+      cc: 'xavier.laumonier@fintecture.com', # Optional
+      bcc: 'xavier.laumonier@fintecture.com' # Optional
     },
     data: {
       type: 'REQUEST_TO_PAY',
       attributes: {
-        amount: 123, # Mandatory
+        amount: "123", # Mandatory
         currency: 'EUR', # Mandatory
         communication: 'Thanks Mom!' # Mandatory
       }

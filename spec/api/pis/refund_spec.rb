@@ -17,7 +17,7 @@ RSpec.describe Fintecture::Pis::Refund do
     pis_client.generate_token
 
     begin
-      initiate_response = pis_client.refund '4cfbaeb21b2b408cbcd44ac0d6660ac7', 1
+      initiate_response = pis_client.refund '4cfbaeb21b2b408cbcd44ac0d6660ac7', "1"
       meta = initiate_response['meta']
 
       expect(meta['status']).to eq(200)
