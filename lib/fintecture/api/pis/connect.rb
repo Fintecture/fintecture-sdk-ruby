@@ -13,7 +13,7 @@ module Fintecture
     class Connect
       class << self
         # ------------ PUBLIC METHOD ------------
-        def generate(client, payload, state, redirect_uri, origin_uri, **options)
+        def generate(client, payload, state, redirect_uri, origin_uri, options)
 
           @client = client
 
