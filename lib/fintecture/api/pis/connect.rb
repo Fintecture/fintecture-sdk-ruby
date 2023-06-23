@@ -13,7 +13,7 @@ module Fintecture
     class Connect
       class << self
         # ------------ PUBLIC METHOD ------------
-        def generate(client, payload, state, redirect_uri, origin_uri, **options)
+        def generate(client, payload, state, redirect_uri, origin_uri, with_virtualbeneficiary: false)
 
           @client = client
 
@@ -21,18 +21,13 @@ module Fintecture
           payload = _build_payload(payload)
 
           # Do the request
-          _request payload, state, redirect_uri, origin_uri, options
+          _request payload, state, redirect_uri, origin_uri, with_virtualbeneficiary: with_virtualbeneficiary
         end
 
         private
 
         # ------------ REQUEST ------------
-        def _request(payload, state, redirect_uri, origin_uri, options)
-          defaults = {
-            :with_virtualbeneficiary => false
-          }
-          options = defaults.merge(options)
-
+        def _request(payload, state, redirect_uri, origin_uri, with_virtualbeneficiary: false)
           # Get the url request
           url = _endpoint
 
@@ -40,7 +35,7 @@ module Fintecture
           params = {}
           params['redirect_uri'] = redirect_uri if redirect_uri
           params['origin_uri'] = origin_uri if origin_uri
-          params['with_virtualbeneficiary'] = 'true' if options[:with_virtualbeneficiary]
+          params['with_virtualbeneficiary'] = 'true' if with_virtualbeneficiary
           params['state'] = state
 
           query_string = "?#{params.map { |key, value| "#{key}=#{value}" }.join('&')}"

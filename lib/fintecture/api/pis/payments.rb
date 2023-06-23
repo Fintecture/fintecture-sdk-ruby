@@ -10,22 +10,22 @@ module Fintecture
     class Payments
       class << self
         # ------------ PUBLIC METHOD ------------
-        def get(client, session_id, options = {})
+        def get(client, session_id, with_virtualbeneficiary: false)
           @client = client
 
           # Do the get_payments request
-          _request session_id, options
+          _request session_id, with_virtualbeneficiary: with_virtualbeneficiary
         end
 
         private
 
         # ------------ REQUEST ------------
-        def _request(session_id, options)
+        def _request(session_id, with_virtualbeneficiary: false)
           url = _endpoint
 
           # Build uri params
           params = {}
-          params['with_virtualbeneficiary'] = 'true' if options[:with_virtualbeneficiary]
+          params['with_virtualbeneficiary'] = 'true' if with_virtualbeneficiary
 
           query_string = "?#{params.map { |key, value| "#{key}=#{value}" }.join('&')}"
 
