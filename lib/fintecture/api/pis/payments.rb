@@ -24,10 +24,13 @@ module Fintecture
           url = _endpoint
 
           # Build uri params
-          params = {}
-          params['with_virtualbeneficiary'] = 'true' if with_virtualbeneficiary
-
-          query_string = "?#{params.map { |key, value| "#{key}=#{value}" }.join('&')}"
+          query_string = ''
+          if with_virtualbeneficiary
+            params = {}
+            params['with_virtualbeneficiary'] = 'true' if with_virtualbeneficiary
+  
+            query_string = "?#{params.map { |key, value| "#{key}=#{value}" }.join('&')}"
+          end
 
           Fintecture::Faraday::Authentication::Connection.get(
             url: "#{url}/#{session_id}" + query_string,
